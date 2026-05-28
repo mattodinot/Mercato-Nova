@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalogue — Mercato Nova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+  // reset CSS + supression des marges et paddings par defaut 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  // varibles globals 
+    :root {
+      --noir:    #1A1A2E;
+      --or:      #C9A84C;
+      --or-cl:   #E8C96A;
+      --fond:    #F8F5EE;
+      --blanc:   #FFFFFF;
+      --gris:    #6B7280;
+      --gris-c:  #F3F0E8;
+      --bordeau: #7B2D42;
+      --vert:    #2D7B5A;
+      --bleu:    #2D4A7B;
+      --sh-s:    0 2px 12px rgba(0,0,0,0.07);
+      --sh-m:    0 4px 24px rgba(0,0,0,0.10);
+      --sh-l:    0 12px 40px rgba(0,0,0,0.15);
+      --rad:     10px;
+      --tr:      0.22s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', Arial, sans-serif; background: var(--fond); color: var(--noir); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+
+
+    .navbar { position: sticky; top: 0; z-index: 100; background: var(--noir); box-shadow: 0 2px 20px rgba(0,0,0,0.35); }
+    .navbar__inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; padding: 0 24px; height: 64px; gap: 28px; }
+    .navbar__logo { display: flex; align-items: center; gap: 10px; }
+    .navbar__logo-icon { width: 38px; height: 38px; background: var(--or); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+    .navbar__logo-text { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 700; color: var(--or); letter-spacing: 1.5px; }
+    .navbar__links { display: flex; gap: 2px; flex: 1; }
+    .navbar__link { padding: 7px 14px; border-radius: 7px; font-size: 13.5px; font-weight: 500; color: #D1D5DB; transition: all var(--tr); }
+    .navbar__link:hover, .navbar__link--active { color: var(--or); background: rgba(201,168,76,0.12); }
+    .navbar__right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .navbar__search { display: flex; align-items: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; padding: 7px 13px; gap: 8px; }
+    .navbar__search input { background: transparent; border: none; outline: none; color: #F8F5EE; font-size: 13px; width: 190px; font-family: inherit; }
+    .navbar__search input::placeholder { color: #6B7280; }
+    .navbar__icon-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: #D1D5DB; font-size: 16px; cursor: pointer; position: relative; }
+    .navbar__badge { position: absolute; top: -5px; right: -5px; background: var(--or); color: var(--noir); border-radius: 50%; width: 17px; height: 17px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .navbar__login { background: var(--or); color: var(--noir); border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 700; }
+
+    .cat-header {
+      background: var(--noir);
+      padding: 40px 24px 36px;
+    }
+    .cat-header__inner { max-width: 1280px; margin: 0 auto; }
+    .cat-header__eyebrow {
+      font-size: 11px; color: var(--or); font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .cat-header__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 38px; color: #F8F5EE; margin-bottom: 8px;
+    }
+    .cat-header__sub { color: #9CA3AF; font-size: 14px; margin-bottom: 24px; }
+    .cat-header__search {
+      display: flex; max-width: 500px;
+      background: var(--blanc); border-radius: 10px; overflow: hidden;
+    }
+    .cat-header__search input {
+      flex: 1; border: none; outline: none;
+      padding: 13px 18px; font-size: 14px; color: var(--noir);
+      font-family: inherit;
+    }
+    .cat-header__search input::placeholder { color: #9CA3AF; }
+    .cat-header__search-btn {
+      background: var(--or); padding: 0 18px;
+      display: flex; align-items: center; font-size: 17px;
+      color: var(--noir); cursor: pointer;
+    }
+
+    .chips-bar {
+      background: var(--blanc);
+      border-bottom: 1px solid #F0EDE6;
+    }
+    .chips-bar__inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 12px 24px;
+      display: flex; gap: 9px; flex-wrap: wrap; align-items: center;
+    }
+    .chip {
+      padding: 6px 15px; border-radius: 22px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all var(--tr);
+      border: 1.5px solid currentColor;
+    }
+    .chip--immediat { color: var(--vert); background: #E8F5EF; }
+    .chip--immediat.active { background: var(--vert); color: var(--blanc); }
+    .chip--enchere  { color: var(--bordeau); background: #F5E8EC; }
+    .chip--enchere.active  { background: var(--bordeau); color: var(--blanc); }
+    .chip--nego     { color: var(--bleu); background: #E8EDF5; }
+    .chip--nego.active     { background: var(--bleu); color: var(--blanc); }
+    .chips-bar__sep { width: 1px; height: 24px; background: #E5E7EB; }
+    .chip--cat { color: var(--gris); background: var(--blanc); border-color: #E5E7EB; }
+    .chip--cat.active { background: var(--noir); color: var(--or); border-color: var(--noir); }
+
+  
+    .cat-body {
+      max-width: 1280px; margin: 0 auto;
+      padding: 28px 24px 60px;
+      display: flex; gap: 28px; align-items: flex-start;
+    }
+
+    .sidebar { width: 256px; flex-shrink: 0; }
+    .sidebar-card {
+      background: var(--blanc); border-radius: 12px;
+      padding: 18px; margin-bottom: 14px;
+      border: 1px solid #F0EDE6; box-shadow: var(--sh-s);
+    }
+    .sidebar-title {
+      font-size: 11.5px; font-weight: 700; color: var(--noir);
+      text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 13px;
+    }
+    .cat-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      background: transparent; border: none;
+      font-size: 13px; font-weight: 400; color: #374151;
+      cursor: pointer; transition: all var(--tr); text-align: left;
+    }
+    .cat-btn:hover { background: var(--fond); color: var(--noir); }
+    .cat-btn.active { background: var(--noir); color: var(--or); font-weight: 600; }
+    .cat-count {
+      font-size: 10.5px; background: var(--fond); color: var(--gris);
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .cat-btn.active .cat-count { background: rgba(201,168,76,0.18); color: var(--or); }
+
+    .check-row {
+      display: flex; align-items: center; gap: 9px;
+      padding: 5px 2px; cursor: pointer; font-size: 13px; color: #374151;
+    }
+    .check-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--noir); cursor: pointer; }
+
+    .range-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--gris); margin-bottom: 8px; }
+    input[type="range"] { width: 100%; accent-color: var(--or); cursor: pointer; }
+
+    .sidebar-reset {
+      width: 100%; padding: 10px; border: 1.5px solid #E5E7EB;
+      border-radius: 9px; color: var(--gris); font-size: 13px;
+      background: transparent; cursor: pointer; transition: all var(--tr);
+    }
+    .sidebar-reset:hover { border-color: var(--noir); color: var(--noir); }
+
+    .main-area { flex: 1; min-width: 0; }
+
+
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--blanc); border-radius: var(--rad);
+      padding: 12px 18px; margin-bottom: 20px;
+      border: 1px solid #F0EDE6; box-shadow: var(--sh-s);
+    }
+    .toolbar__count { font-size: 14px; color: var(--gris); }
+    .toolbar__count strong { color: var(--noir); }
+    .toolbar__right { display: flex; gap: 10px; align-items: center; }
+    .toolbar__select {
+      border: 1.5px solid #E5E7EB; border-radius: 8px;
+      padding: 7px 12px; font-size: 13px; color: #374151;
+      background: var(--blanc); cursor: pointer; outline: none;
+      font-family: inherit;
+    }
+    .view-toggle {
+      display: flex; border: 1.5px solid #E5E7EB; border-radius: 8px; overflow: hidden;
+    }
+    .view-btn {
+      padding: 7px 13px; background: var(--blanc); border: none;
+      color: #9CA3AF; font-size: 17px; cursor: pointer; transition: all var(--tr);
+    }
+    .view-btn.active { background: var(--noir); color: var(--or); }
+
+    /* Grid */
+    .art-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+      gap: 22px;
+    }
+    .art-grid--list {
+      grid-template-columns: 1fr;
+    }
+
+  
+    .card {
+      background: var(--blanc); border-radius: 13px;
+      overflow: hidden; border: 1px solid #F0EDE6;
+      box-shadow: var(--sh-s);
+      transition: transform var(--tr), box-shadow var(--tr);
+      display: flex; flex-direction: column; cursor: pointer;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--sh-l); }
+    .card--list { flex-direction: row; }
+    .card--list .card__img { width: 180px; flex-shrink: 0; height: auto; }
+    .card--list:hover { transform: translateY(-2px); }
+
+    .card__img {
+      position: relative; height: 206px;
+      overflow: hidden; background: var(--gris-c);
+    }
+    .card__img svg { width: 100%; height: 100%; }
+    .card__badge {
+      position: absolute; top: 11px; left: 11px;
+      padding: 4px 11px; border-radius: 20px;
+      font-size: 10.5px; font-weight: 700; border: 1px solid currentColor;
+    }
+    .card__badge--immediat { color: var(--vert); background: #E8F5EF; }
+    .card__badge--enchere  { color: var(--bordeau); background: #F5E8EC; }
+    .card__badge--nego     { color: var(--bleu); background: #E8EDF5; }
+    .card__fav {
+      position: absolute; top: 11px; right: 11px;
+      background: rgba(255,255,255,0.92); border: 1px solid #E5E7EB;
+      border-radius: 50%; width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer; transition: all var(--tr);
+    }
+    .card__fav:hover { border-color: var(--bordeau); background: #FFF0F3; }
+    .card__body {
+      padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 5px;
+    }
+    .card__artist { font-size: 11px; color: var(--gris); font-weight: 500; }
+    .card__title  { font-size: 15px; font-weight: 700; color: var(--noir); line-height: 1.3; }
+    .card__meta   { font-size: 11px; color: #9CA3AF; }
+    .card__timer  { font-size: 12px; color: var(--vert); font-weight: 600; }
+    .card__timer--urgent { color: var(--bordeau); }
+    .card__divider { height: 1px; background: #F3F0E8; margin: 6px 0; }
+    .card__price-row { display: flex; align-items: center; justify-content: space-between; }
+    .card__price-label { font-size: 10px; color: #9CA3AF; }
+    .card__price { font-size: 21px; font-weight: 800; color: var(--noir); }
+    .card__price--enchere { color: var(--bordeau); }
+    .card__stats { display: flex; gap: 12px; font-size: 11px; color: #9CA3AF; }
+    .card__ship  { font-size: 11px; color: var(--gris); }
+    .card__footer {
+      padding: 10px 16px; border-top: 1px solid #F3F0E8; display: flex; gap: 8px;
+    }
+    .btn-p {
+      flex: 1; border-radius: 9px; padding: 10px 0;
+      font-size: 13px; font-weight: 700; color: var(--blanc);
+      cursor: pointer; transition: opacity var(--tr); border: none;
+    }
+    .btn-p:hover { opacity: 0.86; }
+    .btn-p--noir    { background: var(--noir); color: var(--or); }
+    .btn-p--bordeau { background: var(--bordeau); }
+    .btn-p--bleu    { background: var(--bleu); }
+    .btn-s {
+      background: transparent; color: var(--gris);
+      border: 1.5px solid #E5E7EB; border-radius: 9px;
+      padding: 10px 14px; font-size: 13px; cursor: pointer;
+      transition: all var(--tr);
+    }
+    .btn-s:hover { border-color: var(--noir); color: var(--noir); }
+
+    .empty {
+      text-align: center; padding: 90px 24px;
+    }
+    .empty__icon { font-size: 68px; margin-bottom: 18px; }
+    .empty__title { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; color: var(--noir); margin-bottom: 9px; }
+    .empty__sub { color: var(--gris); margin-bottom: 26px; }
+    .empty__btn {
+      background: var(--noir); color: var(--or); border: none;
+      border-radius: 9px; padding: 11px 26px; font-size: 14px;
+      font-weight: 700; cursor: pointer;
+    }
+
+    .footer { background: var(--noir); color: #D1D5DB; margin-top: 20px; }
+    .footer__grid { max-width: 1280px; margin: 0 auto; padding: 48px 24px 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+    .footer__logo { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: var(--or); margin-bottom: 12px; }
+    .footer__tagline { font-size: 13px; color: #9CA3AF; line-height: 1.75; margin-bottom: 16px; }
+    .footer__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer__tag { background: rgba(201,168,76,0.12); color: var(--or); border: 1px solid rgba(201,168,76,0.28); border-radius: 20px; padding: 4px 12px; font-size: 11px; }
+    .footer__col-title { font-size: 12px; font-weight: 700; color: #F8F5EE; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+    .footer__col-link { display: block; font-size: 13px; color: #9CA3AF; margin-bottom: 9px; }
+    .footer__col-link:hover { color: var(--or); }
+    .footer__bar { border-top: 1px solid rgba(255,255,255,0.07); padding: 18px 24px; max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; font-size: 12px; color: #6B7280; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+    }
+    @media (max-width: 640px) {
+      .navbar__search, .navbar__links { display: none; }
+      .art-grid { grid-template-columns: 1fr 1fr; }
+      .footer__grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .art-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+ 
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎨</div>
+        <span class="navbar__logo-text">MERCATO NOVA</span>
+      </a>
+      <div class="navbar__links">
+        <a href="index.html"     class="navbar__link">Accueil</a>
+        <a href="catalogue.html" class="navbar__link navbar__link--active">Catalogue</a>
+        <a href="#"              class="navbar__link">Enchères</a>
+        <a href="#"              class="navbar__link">Négociation</a>
+      </div>
+      <div class="navbar__right">
+        <div class="navbar__search">
+          <span style="color:#9CA3AF;font-size:14px;">🔍</span>
+          <input type="text" id="navSearch" placeholder="Rechercher une œuvre, un artiste…" />
+        </div>
+        <button class="navbar__icon-btn" title="Favoris">♡</button>
+        <button class="navbar__icon-btn" title="Panier">
+          🛒<span class="navbar__badge" id="cartBadge">0</span>
+        </button>
+        <button class="navbar__login">Se connecter</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cat-header">
+    <div class="cat-header__inner">
+      <div class="cat-header__eyebrow">Catalogue</div>
+      <h1 class="cat-header__title">Toutes les Œuvres</h1>
+      <p class="cat-header__sub">Explorez notre sélection d'œuvres originales d'artistes indépendants</p>
+      <div class="cat-header__search">
+        <input type="text" id="mainSearch" placeholder="Rechercher par titre, artiste, technique, style…" />
+        <button class="cat-header__search-btn">🔍</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="chips-bar">
+    <div class="chips-bar__inner">
+      <span style="font-size:12px;color:#6B7280;font-weight:500;white-space:nowrap;">Filtres rapides :</span>
+      <button class="chip chip--immediat" data-filter="type" data-value="immediat">Achat immédiat</button>
+      <button class="chip chip--enchere"  data-filter="type" data-value="enchere">Enchères</button>
+      <button class="chip chip--nego"     data-filter="type" data-value="negociation">Négociation</button>
+      <div class="chips-bar__sep"></div>
+      <button class="chip chip--cat" data-filter="cat" data-value="peinture">🖼️ Peinture</button>
+      <button class="chip chip--cat" data-filter="cat" data-value="sculpture">🗿 Sculpture</button>
+      <button class="chip chip--cat" data-filter="cat" data-value="photo">📷 Photo</button>
+      <button class="chip chip--cat" data-filter="cat" data-value="numerique">💻 Numérique</button>
+      <button class="chip chip--cat" data-filter="cat" data-value="dessin">✏️ Dessin</button>
+    </div>
+  </div>
+
+  <div class="cat-body">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Catégories</div>
+        <button class="cat-btn active" data-cat="all">Toutes les catégories<span class="cat-count">12</span></button>
+        <button class="cat-btn" data-cat="peinture">Peinture<span class="cat-count">4</span></button>
+        <button class="cat-btn" data-cat="sculpture">Sculpture<span class="cat-count">2</span></button>
+        <button class="cat-btn" data-cat="photo">Photographie<span class="cat-count">2</span></button>
+        <button class="cat-btn" data-cat="numerique">Art numérique<span class="cat-count">2</span></button>
+        <button class="cat-btn" data-cat="dessin">Dessin & Illustration<span class="cat-count">2</span></button>
+      </div>
+
+>
+      <div class="sidebar-card">
+        <div class="sidebar-title">Type de vente</div>
+        <label class="check-row">
+          <input type="checkbox" data-type="immediat" /> Achat immédiat
+        </label>
+        <label class="check-row">
+          <input type="checkbox" data-type="enchere" /> Enchères
+        </label>
+        <label class="check-row">
+          <input type="checkbox" data-type="negociation" /> Négociation
+        </label>
+      </div>
+
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Prix maximum</div>
+        <div class="range-row">
+          <span>0 €</span>
+          <span id="priceVal">5 000 €</span>
+        </div>
+        <input type="range" min="0" max="5000" step="50" value="5000" id="priceRange" />
+      </div>
+
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">État</div>
+        <label class="check-row"><input type="checkbox" /> Neuf</label>
+        <label class="check-row"><input type="checkbox" /> Très bon état</label>
+        <label class="check-row"><input type="checkbox" /> Bon état</label>
+        <label class="check-row"><input type="checkbox" /> Occasion</label>
+      </div>
+
+      <button class="sidebar-reset" id="resetBtn">↺ Réinitialiser les filtres</button>
+    </aside>
+
+
+    <div class="main-area">
+
+
+      <div class="toolbar">
+        <div class="toolbar__count"><strong id="resultCount">12</strong> œuvres trouvées</div>
+        <div class="toolbar__right">
+          <select class="toolbar__select" id="sortSelect">
+            <option value="recent">Plus récents</option>
+            <option value="prix_asc">Prix croissant</option>
+            <option value="prix_desc">Prix décroissant</option>
+            <option value="popular">Popularité</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-btn active" id="viewGrid" title="Vue grille">⊞</button>
+            <button class="view-btn" id="viewList" title="Vue liste">≡</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="art-grid" id="artGrid">
+
+
+        <div class="card" data-cat="peinture" data-type="immediat" data-prix="1200" data-etat="Neuf" data-annee="2023" data-pop="234">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#8B4513"/>
+              <rect x="38" y="22" width="224" height="162" fill="#D2691E" rx="5" opacity="0.65"/>
+              <rect x="78" y="52" width="144" height="102" fill="#F4A460" rx="4" opacity="0.75"/>
+              <circle cx="150" cy="103" r="36" fill="#8B4513" opacity="0.4"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Marie Durand</div>
+            <div class="card__title">Composition en Or et Nuit</div>
+            <div class="card__meta">Huile sur toile · 100 × 80 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">1 200 €</div>
+              <div class="card__stats"><span>👁 234</span><span>♡ 18</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+        <div class="card" data-cat="photo" data-type="negociation" data-prix="450" data-etat="Neuf" data-annee="2024" data-pop="187">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#2C3E50"/>
+              <rect x="38" y="22" width="224" height="162" fill="#3498DB" rx="5" opacity="0.5"/>
+              <rect x="78" y="52" width="144" height="102" fill="#ECF0F1" rx="4" opacity="0.6"/>
+              <ellipse cx="150" cy="103" rx="52" ry="32" fill="#3498DB" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--nego">Négociation</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Kana Leblanc</div>
+            <div class="card__title">Sérénité Urbaine #7</div>
+            <div class="card__meta">Photographie numérique · 60 × 90 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">450 €</div>
+              <div class="card__stats"><span>👁 187</span><span>♡ 24</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition rapide</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bleu">💬 Négocier</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="sculpture" data-type="enchere" data-prix="3100" data-etat="Neuf" data-annee="2022" data-pop="512">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#1A1A2E"/>
+              <rect x="38" y="22" width="224" height="162" fill="#C9A84C" rx="5" opacity="0.45"/>
+              <rect x="78" y="52" width="144" height="102" fill="#F8F5EE" rx="4" opacity="0.55"/>
+              <polygon points="150,68 182,122 118,122" fill="#1A1A2E" opacity="0.4"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Thomas Renard</div>
+            <div class="card__title">L'Éveil de la Forme</div>
+            <div class="card__meta">Bronze · 45 × 30 × 25 cm · 2022</div>
+            <div class="card__timer card__timer--urgent" id="t3">⏱ 02:14:30 · 7 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">3 100 €</div>
+              </div>
+              <div class="card__stats"><span>👁 512</span><span>♡ 41</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bordeau">🔨 Enchérir</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="peinture" data-type="immediat" data-prix="680" data-etat="Neuf" data-annee="2024" data-pop="98">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#8B6914"/>
+              <rect x="38" y="22" width="224" height="162" fill="#D4A843" rx="5" opacity="0.6"/>
+              <rect x="78" y="52" width="144" height="102" fill="#FBE9B0" rx="4" opacity="0.7"/>
+              <circle cx="110" cy="88" r="26" fill="#8B6914" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Sophie Moreau</div>
+            <div class="card__title">Aquarelle du Crépuscule</div>
+            <div class="card__meta">Aquarelle · 50 × 70 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">680 €</div>
+              <div class="card__stats"><span>👁 98</span><span>♡ 12</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="numerique" data-type="immediat" data-prix="320" data-etat="Neuf" data-annee="2024" data-pop="145">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#5C3D91"/>
+              <rect x="38" y="22" width="224" height="162" fill="#9B72D0" rx="5" opacity="0.6"/>
+              <rect x="78" y="52" width="144" height="102" fill="#E8D9F5" rx="4" opacity="0.65"/>
+              <rect x="116" y="78" width="68" height="50" fill="#5C3D91" rx="3" opacity="0.5"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Lucas Bernard</div>
+            <div class="card__title">Fragment #12</div>
+            <div class="card__meta">Impression numérique · 40 × 40 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">320 €</div>
+              <div class="card__stats"><span>👁 145</span><span>♡ 9</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="dessin" data-type="negociation" data-prix="280" data-etat="Très bon état" data-annee="2023" data-pop="76">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#2D7B5A"/>
+              <rect x="38" y="22" width="224" height="162" fill="#5BAA8A" rx="5" opacity="0.6"/>
+              <rect x="78" y="52" width="144" height="102" fill="#C4E8D8" rx="4" opacity="0.7"/>
+              <circle cx="104" cy="84" r="22" fill="#2D7B5A" opacity="0.4"/>
+              <circle cx="190" cy="122" r="18" fill="#2D7B5A" opacity="0.4"/>
+            </svg>
+            <span class="card__badge card__badge--nego">Négociation</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Amira Khalil</div>
+            <div class="card__title">Portrait de l'Absence</div>
+            <div class="card__meta">Encre de Chine · 30 × 42 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">280 €</div>
+              <div class="card__stats"><span>👁 76</span><span>♡ 6</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition rapide</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bleu">💬 Négocier</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="peinture" data-type="enchere" data-prix="1900" data-etat="Bon état" data-annee="2021" data-pop="389">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#2D4A7B"/>
+              <rect x="38" y="22" width="224" height="162" fill="#5B8AC5" rx="5" opacity="0.5"/>
+              <rect x="78" y="52" width="144" height="102" fill="#D4E4F7" rx="4" opacity="0.65"/>
+              <circle cx="150" cy="103" r="42" fill="#2D4A7B" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Jean-Paul Vidal</div>
+            <div class="card__title">Mémoire Bleue</div>
+            <div class="card__meta">Acrylique · 120 × 90 cm · 2021</div>
+            <div class="card__timer" id="t7">⏱ 23:44:58 · 4 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">1 900 €</div>
+              </div>
+              <div class="card__stats"><span>👁 389</span><span>♡ 33</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bordeau">🔨 Enchérir</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="numerique" data-type="immediat" data-prix="950" data-etat="Neuf" data-annee="2024" data-pop="201">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#8B6914"/>
+              <rect x="38" y="22" width="224" height="162" fill="#D4A843" rx="5" opacity="0.55"/>
+              <rect x="78" y="52" width="144" height="102" fill="#FBE9B0" rx="4" opacity="0.65"/>
+              <rect x="110" y="75" width="80" height="56" fill="#8B6914" rx="4" opacity="0.45"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Elena Rossi</div>
+            <div class="card__title">La Danse des Particules</div>
+            <div class="card__meta">Impression numérique · 80 × 60 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">950 €</div>
+              <div class="card__stats"><span>👁 201</span><span>♡ 28</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="peinture" data-type="immediat" data-prix="520" data-etat="Neuf" data-annee="2023" data-pop="112">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#3A1A1A"/>
+              <rect x="38" y="22" width="224" height="162" fill="#8B4040" rx="5" opacity="0.55"/>
+              <rect x="78" y="52" width="144" height="102" fill="#D4A0A0" rx="4" opacity="0.65"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Marc Fontaine</div>
+            <div class="card__title">Paysage Intérieur III</div>
+            <div class="card__meta">Pastel · 65 × 50 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">520 €</div>
+              <div class="card__stats"><span>👁 112</span><span>♡ 15</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="dessin" data-type="immediat" data-prix="180" data-etat="Neuf" data-annee="2024" data-pop="63">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#2A1A3A"/>
+              <rect x="38" y="22" width="224" height="162" fill="#6A4A8A" rx="5" opacity="0.55"/>
+              <rect x="78" y="52" width="144" height="102" fill="#C0A8D8" rx="4" opacity="0.65"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Yuki Tanaka</div>
+            <div class="card__title">Géographie Imaginaire</div>
+            <div class="card__meta">Encre de Chine · A4 · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">180 €</div>
+              <div class="card__stats"><span>👁 63</span><span>♡ 8</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--noir add-cart">🛒 Acheter</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+
+        <div class="card" data-cat="sculpture" data-type="enchere" data-prix="3800" data-etat="Neuf" data-annee="2022" data-pop="445">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#1A3A2A"/>
+              <rect x="38" y="22" width="224" height="162" fill="#3D7A5A" rx="5" opacity="0.55"/>
+              <rect x="78" y="52" width="144" height="102" fill="#A8D5B5" rx="4" opacity="0.7"/>
+              <ellipse cx="150" cy="103" rx="56" ry="36" fill="#1A3A2A" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Claire Dubois</div>
+            <div class="card__title">Éclat de Marbre #2</div>
+            <div class="card__meta">Marbre · 35 × 20 × 15 cm · 2022</div>
+            <div class="card__timer" id="t11">⏱ 06:28:00 · 5 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">3 800 €</div>
+              </div>
+              <div class="card__stats"><span>👁 445</span><span>♡ 52</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bordeau">🔨 Enchérir</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+  
+        <div class="card" data-cat="photo" data-type="negociation" data-prix="750" data-etat="Neuf" data-annee="2023" data-pop="168">
+          <div class="card__img">
+            <svg viewBox="0 0 300 206" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="206" fill="#1A2A3A"/>
+              <rect x="38" y="22" width="224" height="162" fill="#4A6A8A" rx="5" opacity="0.55"/>
+              <rect x="78" y="52" width="144" height="102" fill="#B0C8E0" rx="4" opacity="0.65"/>
+              <circle cx="150" cy="103" r="35" fill="#1A2A3A" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--nego">Négociation</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Erik Svensson</div>
+            <div class="card__title">Lumière du Nord</div>
+            <div class="card__meta">Photo argentique · 50 × 75 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">750 €</div>
+              <div class="card__stats"><span>👁 168</span><span>♡ 21</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition rapide</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-p btn-p--bleu">💬 Négocier</button>
+            <button class="btn-s">Voir</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- État vide -->
+      <div class="empty" id="emptyState" style="display:none;">
+        <div class="empty__icon">🎨</div>
+        <h3 class="empty__title">Aucune œuvre trouvée</h3>
+        <p class="empty__sub">Essayez d'élargir vos critères de recherche</p>
+        <button class="empty__btn" id="emptyReset">Voir toutes les œuvres</button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">🎨 MERCATO NOVA</div>
+        <p class="footer__tagline">La marketplace dédiée aux œuvres d'art originales.<br>Achetez, vendez et enchérissez en toute confiance.</p>
+        <div class="footer__tags">
+          <span class="footer__tag">Peinture</span>
+          <span class="footer__tag">Sculpture</span>
+          <span class="footer__tag">Photographie</span>
+          <span class="footer__tag">Art numérique</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Acheter</div>
+        <a href="catalogue.html" class="footer__col-link">Catalogue</a>
+        <a href="#" class="footer__col-link">Enchères en cours</a>
+        <a href="#" class="footer__col-link">Nouveautés</a>
+      </div>
+      <div>
+        <div class="footer__col-title">Vendre</div>
+        <a href="#" class="footer__col-link">Déposer une annonce</a>
+        <a href="#" class="footer__col-link">Espace artiste</a>
+        <a href="#" class="footer__col-link">Tarifs & commissions</a>
+      </div>
+      <div>
+        <div class="footer__col-title">Aide</div>
+        <a href="#" class="footer__col-link">À propos</a>
+        <a href="#" class="footer__col-link">Comment ça marche</a>
+        <a href="#" class="footer__col-link">Contact</a>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2</span>
+      <span>Tous droits réservés</span>
+    </div>
+  </footer>
+
+
+  <script>
+
+    let activeTypes = [];
+    let activeCat   = "all";
+    let maxPrix     = 5000;
+    let searchQuery = "";
+    let cartCount   = 0;
+
+    const grid  = document.getElementById("artGrid");
+    const cards = Array.from(grid.querySelectorAll(".card"));
+    const count = document.getElementById("resultCount");
+    const empty = document.getElementById("emptyState");
+
+    function applyFilters() {
+      let visible = 0;
+      cards.forEach(card => {
+        const cat   = card.dataset.cat;
+        const type  = card.dataset.type;
+        const prix  = parseInt(card.dataset.prix);
+        const title = card.querySelector(".card__title")?.textContent.toLowerCase() || "";
+        const artist= card.querySelector(".card__artist")?.textContent.toLowerCase() || "";
+        const meta  = card.querySelector(".card__meta")?.textContent.toLowerCase() || "";
+
+        const catOk  = activeCat === "all" || cat === activeCat;
+        const typeOk = activeTypes.length === 0 || activeTypes.includes(type);
+        const prixOk = prix <= maxPrix;
+        const searchOk = !searchQuery || title.includes(searchQuery) || artist.includes(searchQuery) || meta.includes(searchQuery);
+
+        if (catOk && typeOk && prixOk && searchOk) {
+          card.style.display = "";
+          visible++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+      count.textContent = visible;
+      empty.style.display = visible === 0 ? "block" : "none";
+      grid.style.display  = visible === 0 ? "none"  : "";
+    }
+
+
+    document.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const filter = chip.dataset.filter;
+        const value  = chip.dataset.value;
+
+        if (filter === "type") {
+          if (activeTypes.includes(value)) {
+            activeTypes = activeTypes.filter(t => t !== value);
+            chip.classList.remove("active");
+          } else {
+            activeTypes.push(value);
+            chip.classList.add("active");
+
+            const cb = document.querySelector(`input[data-type="${value}"]`);
+            if (cb) cb.checked = true;
+          }
+        } else if (filter === "cat") {
+          const wasActive = chip.classList.contains("active");
+          document.querySelectorAll(".chip--cat").forEach(c => c.classList.remove("active"));
+          if (wasActive) {
+            activeCat = "all";
+          } else {
+            activeCat = value;
+            chip.classList.add("active");
+          }
+
+          document.querySelectorAll(".cat-btn").forEach(b => {
+            b.classList.toggle("active", b.dataset.cat === activeCat);
+          });
+        }
+        applyFilters();
+      });
+    });
+
+
+    document.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeCat = btn.dataset.cat;
+        document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".chip--cat").forEach(c => {
+          c.classList.toggle("active", c.dataset.value === activeCat);
+        });
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll("input[data-type]").forEach(cb => {
+      cb.addEventListener("change", () => {
+        const val = cb.dataset.type;
+        if (cb.checked) {
+          if (!activeTypes.includes(val)) activeTypes.push(val);
+        } else {
+          activeTypes = activeTypes.filter(t => t !== val);
+        }
+        // Sync chips
+        const chip = document.querySelector(`.chip[data-value="${val}"]`);
+        if (chip) chip.classList.toggle("active", cb.checked);
+        applyFilters();
+      });
+    });
+
+    const priceRange = document.getElementById("priceRange");
+    const priceVal   = document.getElementById("priceVal");
+    priceRange.addEventListener("input", () => {
+      maxPrix = parseInt(priceRange.value);
+      priceVal.textContent = maxPrix.toLocaleString("fr-FR") + " €";
+      applyFilters();
+    });
+
+    function handleSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      applyFilters();
+    }
+    document.getElementById("mainSearch").addEventListener("input", e => handleSearch(e.target.value));
+    document.getElementById("navSearch").addEventListener("input", e => handleSearch(e.target.value));
+
+
+    function resetAll() {
+      activeTypes = []; activeCat = "all"; maxPrix = 5000; searchQuery = "";
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".cat-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === "all"));
+      document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
+      priceRange.value = 5000; priceVal.textContent = "5 000 €";
+      document.getElementById("mainSearch").value = "";
+      document.getElementById("navSearch").value = "";
+      applyFilters();
+    }
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("emptyReset").addEventListener("click", resetAll);
+
+  
+    document.getElementById("sortSelect").addEventListener("change", e => {
+      const val = e.target.value;
+      const sorted = [...cards].sort((a, b) => {
+        if (val === "prix_asc")  return parseInt(a.dataset.prix) - parseInt(b.dataset.prix);
+        if (val === "prix_desc") return parseInt(b.dataset.prix) - parseInt(a.dataset.prix);
+        if (val === "popular")   return parseInt(b.dataset.pop)  - parseInt(a.dataset.pop);
+        return parseInt(b.dataset.annee) - parseInt(a.dataset.annee);
+      });
+      sorted.forEach(card => grid.appendChild(card));
+    });
+
+ 
+    document.getElementById("viewGrid").addEventListener("click", () => {
+      grid.className = "art-grid";
+      cards.forEach(c => c.classList.remove("card--list"));
+      document.getElementById("viewGrid").classList.add("active");
+      document.getElementById("viewList").classList.remove("active");
+    });
+    document.getElementById("viewList").addEventListener("click", () => {
+      grid.className = "art-grid art-grid--list";
+      cards.forEach(c => c.classList.add("card--list"));
+      document.getElementById("viewList").classList.add("active");
+      document.getElementById("viewGrid").classList.remove("active");
+    });
+
+    document.querySelectorAll(".card__fav").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const on = btn.dataset.active === "1";
+        btn.dataset.active = on ? "0" : "1";
+        btn.textContent = on ? "♡" : "❤️";
+        btn.style.borderColor = on ? "#E5E7EB" : "#7B2D42";
+        btn.style.background  = on ? "rgba(255,255,255,0.92)" : "#FFF0F3";
+      });
+    });
+
+    function showToast(msg) {
+      let t = document.getElementById("toast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "toast";
+        t.style.cssText = "position:fixed;bottom:24px;right:24px;z-index:9999;background:#1A1A2E;color:#C9A84C;border-radius:10px;padding:14px 22px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transition:opacity 0.3s;";
+        document.body.appendChild(t);
+      }
+      t.textContent = "✅ " + msg;
+      t.style.opacity = "1";
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.style.opacity = "0", 2800);
+    }
+    document.querySelectorAll(".add-cart").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const titre = btn.closest(".card")?.querySelector(".card__title")?.textContent || "l'œuvre";
+        cartCount++;
+        document.getElementById("cartBadge").textContent = cartCount;
+        showToast(`"${titre}" ajouté au panier`);
+      });
+    });
+
+    const timerDefs = [
+      { id: "t3",  end: Date.now() + 2*3600000+14*60000,  label: "7 offres", urgent: true  },
+      { id: "t7",  end: Date.now() + 23*3600000+44*60000, label: "4 offres", urgent: false },
+      { id: "t11", end: Date.now() + 6*3600000+28*60000,  label: "5 offres", urgent: false },
+    ];
+    const pad = n => String(n).padStart(2,"0");
+    function tickTimers() {
+      timerDefs.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (!el) return;
+        const diff = t.end - Date.now();
+        if (diff <= 0) { el.textContent = "⏱ Terminée · " + t.label; return; }
+        const h = Math.floor(diff/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        const s = Math.floor((diff%60000)/1000);
+        const urgent = diff < 3600000;
+        el.textContent = `⏱ ${pad(h)}:${pad(m)}:${pad(s)} · ${t.label}`;
+        el.className = "card__timer" + (urgent ? " card__timer--urgent" : "");
+      });
+    }
+    tickTimers();
+    setInterval(tickTimers, 1000);
+  </script>
+
+</body>
+</html>

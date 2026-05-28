@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mercato Nova — Marketplace d'Art</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --noir:     #1A1A2E;
+      --noir-2:   #2D2D4E;
+      --or:       #C9A84C;
+      --or-clair: #E8C96A;
+      --fond:     #F8F5EE;
+      --blanc:    #FFFFFF;
+      --gris:     #6B7280;
+      --gris-c:   #F3F0E8;
+      --bordeau:  #7B2D42;
+      --vert:     #2D7B5A;
+      --bleu:     #2D4A7B;
+      --shadow-s: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-m: 0 4px 24px rgba(0,0,0,0.10);
+      --shadow-l: 0 12px 40px rgba(0,0,0,0.15);
+      --radius:   10px;
+      --radius-l: 16px;
+      --trans:    0.22s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--fond); color: var(--noir); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--noir);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+    }
+    .navbar__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center;
+      padding: 0 24px; height: 64px; gap: 28px;
+    }
+    .navbar__logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .navbar__logo-icon {
+      width: 38px; height: 38px; background: var(--or);
+      border-radius: 9px; display: flex; align-items: center;
+      justify-content: center; font-size: 19px;
+    }
+    .navbar__logo-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px; font-weight: 700;
+      color: var(--or); letter-spacing: 1.5px;
+    }
+    .navbar__links { display: flex; gap: 2px; flex: 1; }
+    .navbar__link {
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 13.5px; font-weight: 500;
+      color: #D1D5DB; background: transparent;
+      transition: all var(--trans); white-space: nowrap;
+    }
+    .navbar__link:hover, .navbar__link--active {
+      color: var(--or);
+      background: rgba(201,168,76,0.12);
+    }
+    .navbar__right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .navbar__search {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9px; padding: 7px 13px; gap: 8px;
+    }
+    .navbar__search input {
+      background: transparent; border: none; outline: none;
+      color: #F8F5EE; font-size: 13px; width: 190px;
+      font-family: inherit;
+    }
+    .navbar__search input::placeholder { color: #6B7280; }
+    .navbar__icon-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      color: #D1D5DB; font-size: 16px; cursor: pointer;
+      transition: all var(--trans); position: relative;
+    }
+    .navbar__icon-btn:hover { background: rgba(255,255,255,0.15); color: var(--or); }
+    .navbar__badge {
+      position: absolute; top: -5px; right: -5px;
+      background: var(--or); color: var(--noir);
+      border-radius: 50%; width: 17px; height: 17px;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .navbar__login {
+      background: var(--or); color: var(--noir);
+      border-radius: 8px; padding: 8px 18px;
+      font-size: 13px; font-weight: 700;
+      transition: all var(--trans);
+    }
+    .navbar__login:hover { background: var(--or-clair); }
+
+    .hero {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D2D4E 50%, #1A2A3E 100%);
+      padding: 90px 24px 110px;
+      position: relative; overflow: hidden;
+    }
+    .hero__circle-1 {
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero__circle-2 {
+      position: absolute; bottom: -80px; left: -80px;
+      width: 350px; height: 350px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,74,123,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero__inner {
+      max-width: 820px; margin: 0 auto;
+      text-align: center; position: relative; z-index: 1;
+    }
+    .hero__pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 24px; padding: 7px 18px; margin-bottom: 28px;
+      font-size: 12px; color: var(--or); font-weight: 500;
+    }
+    .hero__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(38px, 7vw, 72px);
+      font-weight: 700; color: #F8F5EE;
+      line-height: 1.08; margin-bottom: 22px;
+    }
+    .hero__title span { color: var(--or); }
+    .hero__subtitle {
+      font-size: 18px; color: #9CA3AF;
+      margin: 0 auto 44px; line-height: 1.7;
+      max-width: 560px;
+    }
+    .hero__search-wrap {
+      display: flex; max-width: 580px; margin: 0 auto 48px;
+      background: var(--blanc); border-radius: 13px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .hero__search-wrap input {
+      flex: 1; border: none; outline: none;
+      padding: 17px 22px; font-size: 15px; color: var(--noir);
+      font-family: inherit;
+    }
+    .hero__search-wrap input::placeholder { color: #9CA3AF; }
+    .hero__search-btn {
+      background: var(--or); border: none;
+      padding: 0 30px; color: var(--noir);
+      font-weight: 700; font-size: 14px;
+      cursor: pointer; transition: background var(--trans);
+      white-space: nowrap;
+    }
+    .hero__search-btn:hover { background: var(--or-clair); }
+    .hero__stats { display: flex; justify-content: center; gap: 60px; }
+    .hero__stat-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 32px; font-weight: 700; color: var(--or);
+    }
+    .hero__stat-label { font-size: 12px; color: #6B7280; margin-top: 2px; }
+
+    .cats {
+      background: var(--blanc);
+      border-bottom: 1px solid #F0EDE6;
+      box-shadow: var(--shadow-s);
+    }
+    .cats__inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: flex; }
+    .cats__btn {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; gap: 9px;
+      padding: 20px 0; background: transparent; border: none;
+      border-right: 1px solid #F0EDE6;
+      font-size: 14px; font-weight: 500; color: var(--noir);
+      cursor: pointer; transition: all var(--trans);
+    }
+    .cats__btn:last-child { border-right: none; }
+    .cats__btn:hover { background: var(--fond); color: var(--or); }
+    .cats__btn .cats__icon { font-size: 21px; }
+
+    .section { padding: 72px 24px; }
+    .section--dark { background: var(--blanc); }
+    .section--fond { background: var(--fond); }
+    .section__inner { max-width: 1280px; margin: 0 auto; }
+    .section__eyebrow {
+      font-size: 11px; color: var(--or); font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .section__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 34px; color: var(--noir); margin-bottom: 0;
+    }
+    .section__head {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; margin-bottom: 36px;
+    }
+    .section__link {
+      font-size: 13.5px; color: var(--noir); font-weight: 600;
+      border: 1.5px solid var(--noir); border-radius: 8px;
+      padding: 9px 20px; transition: all var(--trans);
+      white-space: nowrap; margin-left: 20px;
+    }
+    .section__link:hover { background: var(--noir); color: var(--or); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+      gap: 24px;
+    }
+    .grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+      background: var(--blanc); border-radius: 13px;
+      overflow: hidden; border: 1px solid #F0EDE6;
+      box-shadow: var(--shadow-s);
+      transition: transform var(--trans), box-shadow var(--trans);
+      display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-l); }
+    .card__img {
+      position: relative; height: 210px;
+      overflow: hidden; background: var(--gris-c);
+    }
+    .card__img svg { width: 100%; height: 100%; }
+    .card__badge {
+      position: absolute; top: 11px; left: 11px;
+      padding: 4px 11px; border-radius: 20px;
+      font-size: 10.5px; font-weight: 700;
+      border: 1px solid currentColor;
+    }
+    .card__badge--immediat { color: var(--vert); background: #E8F5EF; }
+    .card__badge--enchere  { color: var(--bordeau); background: #F5E8EC; }
+    .card__badge--nego     { color: var(--bleu); background: #E8EDF5; }
+    .card__fav {
+      position: absolute; top: 11px; right: 11px;
+      background: rgba(255,255,255,0.92); border: 1px solid #E5E7EB;
+      border-radius: 50%; width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer;
+      transition: all var(--trans);
+    }
+    .card__fav:hover { border-color: var(--bordeau); background: #FFF0F3; }
+    .card__body {
+      padding: 15px 17px; flex: 1;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .card__artist { font-size: 11px; color: var(--gris); font-weight: 500; }
+    .card__title  { font-size: 15px; font-weight: 700; color: var(--noir); line-height: 1.3; }
+    .card__meta   { font-size: 11px; color: #9CA3AF; }
+    .card__timer  { font-size: 12px; color: var(--vert); font-weight: 600; }
+    .card__timer--urgent { color: var(--bordeau); }
+    .card__divider { height: 1px; background: #F3F0E8; margin: 6px 0; }
+    .card__price-row { display: flex; align-items: center; justify-content: space-between; }
+    .card__price-label { font-size: 10px; color: #9CA3AF; }
+    .card__price { font-size: 22px; font-weight: 800; color: var(--noir); }
+    .card__price--enchere { color: var(--bordeau); }
+    .card__stats { display: flex; gap: 12px; font-size: 11px; color: #9CA3AF; }
+    .card__ship  { font-size: 11px; color: var(--gris); margin-top: 3px; }
+    .card__footer { padding: 11px 17px; border-top: 1px solid #F3F0E8; display: flex; gap: 9px; }
+    .btn-primary {
+      flex: 1; border-radius: 9px; padding: 10px 0;
+      font-size: 13px; font-weight: 700;
+      color: var(--blanc); cursor: pointer;
+      transition: opacity var(--trans); border: none;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary--noir    { background: var(--noir); color: var(--or); }
+    .btn-primary--bordeau { background: var(--bordeau); }
+    .btn-primary--bleu    { background: var(--bleu); }
+    .btn-secondary {
+      background: transparent; color: var(--gris);
+      border: 1.5px solid #E5E7EB; border-radius: 9px;
+      padding: 10px 15px; font-size: 13px; cursor: pointer;
+      transition: all var(--trans);
+    }
+    .btn-secondary:hover { border-color: var(--noir); color: var(--noir); }
+
+    .encheres-band {
+      background: #FDF0F3;
+      border-top: 3px solid var(--bordeau);
+      border-bottom: 3px solid var(--bordeau);
+      padding: 48px 24px;
+    }
+    .encheres-band__inner { max-width: 1280px; margin: 0 auto; }
+    .encheres-band__head {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 28px;
+    }
+    .live-badge {
+      background: var(--bordeau); color: var(--blanc);
+      padding: 4px 11px; border-radius: 6px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 1px;
+    }
+    .encheres-band__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px; color: var(--noir);
+      display: flex; align-items: center; gap: 13px;
+    }
+    .encheres-band__link { font-size: 13px; color: var(--bordeau); font-weight: 700; }
+    .encheres-band__link:hover { text-decoration: underline; }
+
+    .how { padding: 80px 24px; background: var(--blanc); }
+    .how__inner { max-width: 1280px; margin: 0 auto; }
+    .how__header { text-align: center; margin-bottom: 56px; }
+    .how__subtitle { color: var(--gris); font-size: 16px; margin-top: 10px; }
+    .how__grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 28px;
+      position: relative;
+    }
+    .how__step { text-align: center; }
+    .how__icon-wrap {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--noir);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin: 0 auto 18px;
+      position: relative; z-index: 1;
+      box-shadow: 0 4px 16px rgba(26,26,46,0.2);
+    }
+    .how__num {
+      font-size: 10.5px; color: var(--or); font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px;
+    }
+    .how__step-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px; color: var(--noir); margin-bottom: 9px;
+    }
+    .how__step-desc { font-size: 13px; color: var(--gris); line-height: 1.65; }
+    .how__connector {
+      position: absolute; top: 32px; height: 2px;
+      background: linear-gradient(90deg, var(--or), #F0EDE6);
+      z-index: 0;
+    }
+
+    .cta-artiste { background: var(--noir); padding: 80px 24px; text-align: center; }
+    .cta-artiste__inner { max-width: 620px; margin: 0 auto; }
+    .cta-artiste__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 38px; color: #F8F5EE; margin-bottom: 18px;
+    }
+    .cta-artiste__subtitle { color: #9CA3AF; font-size: 16px; margin-bottom: 36px; line-height: 1.7; }
+    .cta-artiste__btn {
+      background: var(--or); color: var(--noir);
+      border: none; border-radius: 12px;
+      padding: 16px 40px; font-size: 17px; font-weight: 700;
+      cursor: pointer; transition: background var(--trans);
+    }
+    .cta-artiste__btn:hover { background: var(--or-clair); }
+
+    .footer { background: var(--noir); color: #D1D5DB; }
+    .footer__grid {
+      max-width: 1280px; margin: 0 auto;
+      padding: 52px 24px 36px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 44px;
+    }
+    .footer__logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px; font-weight: 700; color: var(--or);
+      margin-bottom: 13px; display: flex; align-items: center; gap: 9px;
+    }
+    .footer__tagline { font-size: 13px; color: #9CA3AF; line-height: 1.75; margin-bottom: 18px; }
+    .footer__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer__tag {
+      background: rgba(201,168,76,0.12);
+      color: var(--or); border: 1px solid rgba(201,168,76,0.28);
+      border-radius: 20px; padding: 4px 12px; font-size: 11px;
+    }
+    .footer__col-title {
+      font-size: 12px; font-weight: 700; color: #F8F5EE;
+      text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 16px;
+    }
+    .footer__col-link { display: block; font-size: 13px; color: #9CA3AF; margin-bottom: 9px; transition: color var(--trans); }
+    .footer__col-link:hover { color: var(--or); }
+    .footer__bar {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 20px 24px;
+      max-width: 1280px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: #6B7280;
+    }
+
+    @media (max-width: 1024px) {
+      .how__grid { grid-template-columns: repeat(2,1fr); }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+      .grid--4 { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+      .navbar__search { display: none; }
+      .navbar__links { display: none; }
+      .hero { padding: 60px 20px 80px; }
+      .hero__stats { gap: 28px; }
+      .cats__btn span:not(.cats__icon) { display: none; }
+      .how__grid { grid-template-columns: 1fr; }
+      .footer__grid { grid-template-columns: 1fr; }
+      .grid, .grid--4 { grid-template-columns: 1fr 1fr; }
+      .section__head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    }
+    @media (max-width: 480px) {
+      .grid, .grid--4 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎨</div>
+        <span class="navbar__logo-text">MERCATO NOVA</span>
+      </a>
+      <div class="navbar__links">
+        <a href="index.html"     class="navbar__link navbar__link--active">Accueil</a>
+        <a href="catalogue.html" class="navbar__link">Catalogue</a>
+        <a href="#"              class="navbar__link">Enchères</a>
+        <a href="#"              class="navbar__link">Négociation</a>
+      </div>
+      <div class="navbar__right">
+        <div class="navbar__search">
+          <span style="color:#9CA3AF;font-size:14px;">🔍</span>
+          <input type="text" placeholder="Rechercher une œuvre, un artiste…" />
+        </div>
+        <button class="navbar__icon-btn" title="Favoris">♡</button>
+        <button class="navbar__icon-btn" title="Panier">
+          🛒
+          <span class="navbar__badge">2</span>
+        </button>
+        <button class="navbar__login">Se connecter</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero__circle-1"></div>
+    <div class="hero__circle-2"></div>
+    <div class="hero__inner">
+      <div class="hero__pill">
+        ✨ <span>Marketplace d'art en ligne · Achetez · Enchérissez · Négociez</span>
+      </div>
+      <h1 class="hero__title">
+        Découvrez l'Art<br>
+        <span>Autrement</span>
+      </h1>
+      <p class="hero__subtitle">
+        Des œuvres uniques d'artistes indépendants. Trois façons d'acquérir la pièce de vos rêves.
+      </p>
+      <form class="hero__search-wrap" onsubmit="event.preventDefault(); window.location='catalogue.html?q='+this.querySelector('input').value">
+        <input type="text" placeholder="Rechercher une œuvre, un artiste, un style…" />
+        <button type="submit" class="hero__search-btn">Rechercher</button>
+      </form>
+      <div class="hero__stats">
+        <div>
+          <div class="hero__stat-num">12+</div>
+          <div class="hero__stat-label">Œuvres disponibles</div>
+        </div>
+        <div>
+          <div class="hero__stat-num">8</div>
+          <div class="hero__stat-label">Artistes</div>
+        </div>
+        <div>
+          <div class="hero__stat-num">3</div>
+          <div class="hero__stat-label">Modes de vente</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cats">
+    <div class="cats__inner">
+      <button class="cats__btn" onclick="window.location='catalogue.html?cat=peinture'">
+        <span class="cats__icon">🖼️</span><span>Peinture</span>
+      </button>
+      <button class="cats__btn" onclick="window.location='catalogue.html?cat=sculpture'">
+        <span class="cats__icon">🗿</span><span>Sculpture</span>
+      </button>
+      <button class="cats__btn" onclick="window.location='catalogue.html?cat=photo'">
+        <span class="cats__icon">📷</span><span>Photographie</span>
+      </button>
+      <button class="cats__btn" onclick="window.location='catalogue.html?cat=numerique'">
+        <span class="cats__icon">💻</span><span>Art numérique</span>
+      </button>
+      <button class="cats__btn" onclick="window.location='catalogue.html?cat=dessin'">
+        <span class="cats__icon">✏️</span><span>Dessin</span>
+      </button>
+    </div>
+  </div>
+
+  <section class="section section--fond">
+    <div class="section__inner">
+      <div class="section__head">
+        <div>
+          <div class="section__eyebrow">Sélection du moment</div>
+          <h2 class="section__title">Œuvres à la Une</h2>
+        </div>
+        <a href="catalogue.html" class="section__link">Voir tout le catalogue →</a>
+      </div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#8B4513"/>
+              <rect x="40" y="25" width="220" height="160" fill="#D2691E" rx="5" opacity="0.65"/>
+              <rect x="80" y="55" width="140" height="100" fill="#F4A460" rx="4" opacity="0.75"/>
+              <circle cx="150" cy="105" r="35" fill="#8B4513" opacity="0.45"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Marie Durand</div>
+            <div class="card__title">Composition en Or et Nuit</div>
+            <div class="card__meta">Huile sur toile · 100 × 80 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">1 200 €</div>
+              <div class="card__stats"><span>👁 234</span><span>♡ 18</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#2C3E50"/>
+              <rect x="40" y="25" width="220" height="160" fill="#3498DB" rx="5" opacity="0.5"/>
+              <rect x="80" y="55" width="140" height="100" fill="#ECF0F1" rx="4" opacity="0.6"/>
+              <ellipse cx="150" cy="105" rx="50" ry="30" fill="#3498DB" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--nego">Négociation</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Kana Leblanc</div>
+            <div class="card__title">Sérénité Urbaine #7</div>
+            <div class="card__meta">Photographie numérique · 60 × 90 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">450 €</div>
+              <div class="card__stats"><span>👁 187</span><span>♡ 24</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition rapide</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--bleu">💬 Négocier</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#5C3D91"/>
+              <rect x="40" y="25" width="220" height="160" fill="#9B72D0" rx="5" opacity="0.6"/>
+              <rect x="80" y="55" width="140" height="100" fill="#E8D9F5" rx="4" opacity="0.65"/>
+              <rect x="115" y="80" width="70" height="50" fill="#5C3D91" rx="3" opacity="0.5"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Lucas Bernard</div>
+            <div class="card__title">Fragment #12</div>
+            <div class="card__meta">Impression numérique · 40 × 40 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">320 €</div>
+              <div class="card__stats"><span>👁 145</span><span>♡ 9</span></div>
+            </div>
+            <div class="card__ship">🚚 Livraison gratuite</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#2D7B5A"/>
+              <rect x="40" y="25" width="220" height="160" fill="#5BAA8A" rx="5" opacity="0.6"/>
+              <rect x="80" y="55" width="140" height="100" fill="#C4E8D8" rx="4" opacity="0.7"/>
+              <circle cx="100" cy="85" r="22" fill="#2D7B5A" opacity="0.4"/>
+              <circle cx="190" cy="120" r="18" fill="#2D7B5A" opacity="0.4"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Amira Khalil</div>
+            <div class="card__title">Portrait de l'Absence</div>
+            <div class="card__meta">Encre de Chine · 30 × 42 cm · 2023</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">280 €</div>
+              <div class="card__stats"><span>👁 76</span><span>♡ 6</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition rapide</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="encheres-band">
+    <div class="encheres-band__inner">
+      <div class="encheres-band__head">
+        <div class="encheres-band__title">
+          <span class="live-badge">LIVE</span>
+          Enchères en cours
+        </div>
+        <a href="#" class="encheres-band__link">Voir toutes les enchères →</a>
+      </div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#1A1A2E"/>
+              <rect x="40" y="25" width="220" height="160" fill="#C9A84C" rx="5" opacity="0.45"/>
+              <rect x="80" y="55" width="140" height="100" fill="#F8F5EE" rx="4" opacity="0.55"/>
+              <polygon points="150,70 180,120 120,120" fill="#1A1A2E" opacity="0.4"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Thomas Renard</div>
+            <div class="card__title">L'Éveil de la Forme</div>
+            <div class="card__meta">Bronze · 45 × 30 × 25 cm · 2022</div>
+            <div class="card__timer card__timer--urgent" id="timer1">⏱ 02:14:32 · 7 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">3 100 €</div>
+              </div>
+              <div class="card__stats"><span>👁 512</span><span>♡ 41</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--bordeau">🔨 Enchérir</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#2D4A7B"/>
+              <rect x="40" y="25" width="220" height="160" fill="#5B8AC5" rx="5" opacity="0.5"/>
+              <rect x="80" y="55" width="140" height="100" fill="#D4E4F7" rx="4" opacity="0.65"/>
+              <circle cx="150" cy="105" r="40" fill="#2D4A7B" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Jean-Paul Vidal</div>
+            <div class="card__title">Mémoire Bleue</div>
+            <div class="card__meta">Acrylique · 120 × 90 cm · 2021</div>
+            <div class="card__timer" id="timer2">⏱ 23:45:10 · 4 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">1 900 €</div>
+              </div>
+              <div class="card__stats"><span>👁 389</span><span>♡ 33</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--bordeau">🔨 Enchérir</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#1A3A2A"/>
+              <rect x="40" y="25" width="220" height="160" fill="#3D7A5A" rx="5" opacity="0.55"/>
+              <rect x="80" y="55" width="140" height="100" fill="#A8D5B5" rx="4" opacity="0.7"/>
+              <ellipse cx="150" cy="100" rx="55" ry="35" fill="#1A3A2A" opacity="0.35"/>
+            </svg>
+            <span class="card__badge card__badge--enchere">Enchère</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Claire Dubois</div>
+            <div class="card__title">Éclat de Marbre #2</div>
+            <div class="card__meta">Marbre · 35 × 20 × 15 cm · 2022</div>
+            <div class="card__timer" id="timer3">⏱ 06:28:05 · 5 offres</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div>
+                <div class="card__price-label">Enchère actuelle</div>
+                <div class="card__price card__price--enchere">3 800 €</div>
+              </div>
+              <div class="card__stats"><span>👁 445</span><span>♡ 52</span></div>
+            </div>
+            <div class="card__ship">🚚 Expédition sécurisée</div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--bordeau">🔨 Enchérir</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="how__inner">
+      <div class="how__header">
+        <h2 class="section__title">Comment ça marche ?</h2>
+        <p class="how__subtitle">Acquérir une œuvre d'art n'a jamais été aussi simple</p>
+      </div>
+      <div class="how__grid">
+        <div class="how__connector" style="left:calc(12.5% + 32px);right:calc(75% - 32px);top:32px;"></div>
+        <div class="how__connector" style="left:calc(37.5% + 32px);right:calc(50% - 32px);top:32px;"></div>
+        <div class="how__connector" style="left:calc(62.5% + 32px);right:calc(25% - 32px);top:32px;"></div>
+        <div class="how__step">
+          <div class="how__icon-wrap">🔍</div>
+          <div class="how__num">Étape 1</div>
+          <h3 class="how__step-title">Explorez</h3>
+          <p class="how__step-desc">Parcourez notre catalogue d'œuvres originales, filtrez par style, technique ou budget.</p>
+        </div>
+        <div class="how__step">
+          <div class="how__icon-wrap">💡</div>
+          <div class="how__num">Étape 2</div>
+          <h3 class="how__step-title">Choisissez</h3>
+          <p class="how__step-desc">Achat immédiat, enchère ou négociation directe avec l'artiste. À vous de décider.</p>
+        </div>
+        <div class="how__step">
+          <div class="how__icon-wrap">🔒</div>
+          <div class="how__num">Étape 3</div>
+          <h3 class="how__step-title">Achetez</h3>
+          <p class="how__step-desc">Transaction sécurisée, paiement protégé et livraison soignée de votre œuvre.</p>
+        </div>
+        <div class="how__step">
+          <div class="how__icon-wrap">🎨</div>
+          <div class="how__num">Étape 4</div>
+          <h3 class="how__step-title">Profitez</h3>
+          <p class="how__step-desc">Votre œuvre unique arrive chez vous avec son certificat d'authenticité signé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--fond">
+    <div class="section__inner">
+      <div class="section__head">
+        <div>
+          <div class="section__eyebrow">Récemment ajoutées</div>
+          <h2 class="section__title">Nouveautés</h2>
+        </div>
+        <a href="catalogue.html" class="section__link">Tout voir →</a>
+      </div>
+      <div class="grid grid--4">
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#8B6914"/>
+              <rect x="40" y="25" width="220" height="160" fill="#D4A843" rx="5" opacity="0.6"/>
+              <rect x="80" y="55" width="140" height="100" fill="#FBE9B0" rx="4" opacity="0.7"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Sophie Moreau</div>
+            <div class="card__title">Aquarelle du Crépuscule</div>
+            <div class="card__meta">Aquarelle · 50 × 70 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">680 €</div>
+              <div class="card__stats"><span>👁 98</span><span>♡ 12</span></div>
+            </div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#3A1A1A"/>
+              <rect x="40" y="25" width="220" height="160" fill="#8B4040" rx="5" opacity="0.55"/>
+              <rect x="80" y="55" width="140" height="100" fill="#D4A0A0" rx="4" opacity="0.65"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Marc Fontaine</div>
+            <div class="card__title">Paysage Intérieur III</div>
+            <div class="card__meta">Pastel · 65 × 50 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">520 €</div>
+              <div class="card__stats"><span>👁 112</span><span>♡ 15</span></div>
+            </div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#1A2A3A"/>
+              <rect x="40" y="25" width="220" height="160" fill="#4A6A8A" rx="5" opacity="0.55"/>
+              <rect x="80" y="55" width="140" height="100" fill="#B0C8E0" rx="4" opacity="0.65"/>
+            </svg>
+            <span class="card__badge card__badge--nego">Négociation</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Erik Svensson</div>
+            <div class="card__title">Lumière du Nord</div>
+            <div class="card__meta">Photo argentique · 50 × 75 cm · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">750 €</div>
+              <div class="card__stats"><span>👁 168</span><span>♡ 21</span></div>
+            </div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--bleu">💬 Négocier</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__img">
+            <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="210" fill="#2A1A3A"/>
+              <rect x="40" y="25" width="220" height="160" fill="#6A4A8A" rx="5" opacity="0.55"/>
+              <rect x="80" y="55" width="140" height="100" fill="#C0A8D8" rx="4" opacity="0.65"/>
+            </svg>
+            <span class="card__badge card__badge--immediat">Achat immédiat</span>
+            <button class="card__fav">♡</button>
+          </div>
+          <div class="card__body">
+            <div class="card__artist">Yuki Tanaka</div>
+            <div class="card__title">Géographie Imaginaire</div>
+            <div class="card__meta">Encre de Chine · A4 · 2024</div>
+            <div class="card__divider"></div>
+            <div class="card__price-row">
+              <div class="card__price">180 €</div>
+              <div class="card__stats"><span>👁 63</span><span>♡ 8</span></div>
+            </div>
+          </div>
+          <div class="card__footer">
+            <button class="btn-primary btn-primary--noir">🛒 Acheter</button>
+            <button class="btn-secondary">Voir</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-artiste">
+    <div class="cta-artiste__inner">
+      <h2 class="cta-artiste__title">Vous êtes artiste ?</h2>
+      <p class="cta-artiste__subtitle">
+        Rejoignez Mercato Nova et vendez vos œuvres à des collectionneurs du monde entier.
+        Inscription gratuite, commission uniquement sur les ventes.
+      </p>
+      <button class="cta-artiste__btn">Créer mon espace artiste</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">🎨 MERCATO NOVA</div>
+        <p class="footer__tagline">La marketplace dédiée aux œuvres d'art originales.<br>Achetez, vendez et enchérissez en toute confiance.</p>
+        <div class="footer__tags">
+          <span class="footer__tag">Peinture</span>
+          <span class="footer__tag">Sculpture</span>
+          <span class="footer__tag">Photographie</span>
+          <span class="footer__tag">Art numérique</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Acheter</div>
+        <a href="catalogue.html" class="footer__col-link">Catalogue</a>
+        <a href="#" class="footer__col-link">Enchères en cours</a>
+        <a href="#" class="footer__col-link">Nouveautés</a>
+        <a href="#" class="footer__col-link">Meilleures ventes</a>
+      </div>
+      <div>
+        <div class="footer__col-title">Vendre</div>
+        <a href="#" class="footer__col-link">Déposer une annonce</a>
+        <a href="#" class="footer__col-link">Espace artiste</a>
+        <a href="#" class="footer__col-link">Tarifs & commissions</a>
+        <a href="#" class="footer__col-link">Guide du vendeur</a>
+      </div>
+      <div>
+        <div class="footer__col-title">Aide</div>
+        <a href="#" class="footer__col-link">À propos</a>
+        <a href="#" class="footer__col-link">Comment ça marche</a>
+        <a href="#" class="footer__col-link">FAQ</a>
+        <a href="#" class="footer__col-link">Contact</a>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2</span>
+      <span>Tous droits réservés</span>
+    </div>
+  </footer>
+
+  <script>
+    const timers = [
+      { id: "timer1", end: Date.now() + 2*3600000 + 14*60000,  suffix: "7 offres", urgent: true  },
+      { id: "timer2", end: Date.now() + 23*3600000 + 45*60000, suffix: "4 offres", urgent: false },
+      { id: "timer3", end: Date.now() + 6*3600000 + 28*60000,  suffix: "5 offres", urgent: false },
+    ];
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function tickAll() {
+      timers.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (!el) return;
+        const diff = t.end - Date.now();
+        if (diff <= 0) { el.textContent = "⏱ Terminée · " + t.suffix; return; }
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = `⏱ ${pad(h)}:${pad(m)}:${pad(s)} · ${t.suffix}`;
+        el.className = "card__timer" + (diff < 3600000 ? " card__timer--urgent" : "");
+      });
+    }
+    tickAll();
+    setInterval(tickAll, 1000);
+
+    document.querySelectorAll(".card__fav").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const active = btn.dataset.active === "1";
+        btn.dataset.active = active ? "0" : "1";
+        btn.textContent = active ? "♡" : "❤️";
+        btn.style.borderColor = active ? "#E5E7EB" : "#7B2D42";
+        btn.style.background  = active ? "rgba(255,255,255,0.92)" : "#FFF0F3";
+      });
+    });
+
+    function showToast(msg) {
+      let t = document.getElementById("toast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "toast";
+        t.style.cssText = "position:fixed;bottom:24px;right:24px;z-index:9999;background:#1A1A2E;color:#C9A84C;border-radius:10px;padding:14px 22px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transition:opacity 0.3s;";
+        document.body.appendChild(t);
+      }
+      t.textContent = "✅ " + msg;
+      t.style.opacity = "1";
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.style.opacity = "0"; }, 2800);
+    }
+
+    document.querySelectorAll(".btn-primary--noir").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".card");
+        const titre = card.querySelector(".card__title")?.textContent || "l'œuvre";
+        showToast(`"${titre}" ajouté au panier`);
+        const badge = document.querySelector(".navbar__badge");
+        if (badge) badge.textContent = parseInt(badge.textContent || "0") + 1;
+      });
+    });
+  </script>
+
+</body>
+</html>
