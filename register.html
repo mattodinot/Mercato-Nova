@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    .register-box {
+      background: var(--blanc);
+      border-radius: 16px;
+      border: 1px solid #F0EDE6;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 40px;
+    }
+    .register-box__logo {
+      text-align: center; font-size: 22px;
+      font-weight: 700; color: var(--or); margin-bottom: 8px;
+    }
+    .register-box__titre {
+      text-align: center; font-size: 22px;
+      font-weight: 700; margin-bottom: 6px;
+    }
+    .register-box__sous-titre {
+      text-align: center; color: var(--gris);
+      font-size: 14px; margin-bottom: 28px;
+    }
+    .ligne-double {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .register-box__lien {
+      text-align: center; margin-top: 20px;
+      font-size: 14px; color: var(--gris);
+    }
+    .register-box__lien a { color: var(--noir); font-weight: 600; }
+    .register-box__lien a:hover { text-decoration: underline; }
+    /* Boutons de choix de rôle */
+    .choix-role { display: flex; gap: 10px; margin-top: 6px; }
+    .choix-role input[type="radio"] { display: none; }
+    .choix-role label {
+      flex: 1; text-align: center; padding: 10px;
+      border: 1.5px solid #E5E7EB; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .choix-role input[type="radio"]:checked + label {
+      border-color: var(--noir);
+      background: var(--noir); color: var(--or);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="register.html"><button class="navbar__btn actif">S'inscrire</button></a>
+      <a href="login.html"><button class="navbar__btn navbar__btn--outline">Se connecter</button></a>
+    </div>
+  </nav>
+
+  <!-- FORMULAIRE D'INSCRIPTION -->
+  <div class="centre" style="max-width:560px;">
+    <div class="register-box">
+
+      <div class="register-box__logo">🎨 MERCATO NOVA</div>
+      <h1 class="register-box__titre">Créer un compte</h1>
+      <p class="register-box__sous-titre">Rejoignez la marketplace d'art</p>
+
+      <div class="msg-erreur" id="msgErreur"></div>
+      <div class="msg-succes" id="msgSucces"></div>
+
+      <form id="formRegister">
+
+        <!-- Nom et prénom côte à côte -->
+        <div class="ligne-double">
+          <div class="champ">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" placeholder="Marie" required />
+          </div>
+          <div class="champ">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" placeholder="Durand" required />
+          </div>
+        </div>
+
+        <div class="champ">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="email" placeholder="votre@email.fr" required />
+        </div>
+
+        <div class="champ">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" placeholder="Minimum 8 caractères" required minlength="8" />
+        </div>
+
+        <div class="champ">
+          <label for="password2">Confirmer le mot de passe</label>
+          <input type="password" id="password2" name="password2" placeholder="Répétez le mot de passe" required />
+        </div>
+
+        <!-- Choix du rôle -->
+        <div class="champ">
+          <label>Je suis…</label>
+          <div class="choix-role">
+            <input type="radio" name="role" id="role_acheteur" value="acheteur" checked />
+            <label for="role_acheteur">🛒 Acheteur</label>
+
+            <input type="radio" name="role" id="role_vendeur" value="vendeur" />
+            <label for="role_vendeur">🎨 Artiste / Vendeur</label>
+
+            <input type="radio" name="role" id="role_galerie" value="galerie" />
+            <label for="role_galerie">🏛️ Galerie</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn--noir btn--full" id="btnInscription">
+          Créer mon compte
+        </button>
+
+      </form>
+
+      <div class="register-box__lien">
+        Déjà un compte ? <a href="login.html">Se connecter</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    const form   = document.getElementById('formRegister');
+    const msgErr = document.getElementById('msgErreur');
+    const msgOk  = document.getElementById('msgSucces');
+    const btn    = document.getElementById('btnInscription');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      msgErr.style.display = 'none';
+      msgOk.style.display  = 'none';
+
+      const prenom   = document.getElementById('prenom').value.trim();
+      const nom      = document.getElementById('nom').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const password2= document.getElementById('password2').value;
+      const role     = document.querySelector('input[name="role"]:checked').value;
+
+      // Vérification que les mots de passe correspondent
+      if (password !== password2) {
+        msgErr.textContent = 'Les mots de passe ne correspondent pas.';
+        msgErr.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Création en cours…';
+
+      try {
+        const reponse = await fetch('mercato_nova_backend/api/auth/register.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prenom, nom, email, password, role })
+        });
+
+        const data = await reponse.json();
+
+        if (data.success) {
+          msgOk.textContent = 'Compte créé avec succès ! Redirection vers la connexion…';
+          msgOk.style.display = 'block';
+          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        } else {
+          msgErr.textContent = data.error || 'Une erreur est survenue.';
+          msgErr.style.display = 'block';
+        }
+
+      } catch (erreur) {
+        msgErr.textContent = 'Impossible de contacter le serveur.';
+        msgErr.style.display = 'block';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Créer mon compte';
+    });
+  </script>
+
+</body>
+</html>
