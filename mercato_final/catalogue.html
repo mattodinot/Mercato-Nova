@@ -880,6 +880,35 @@
 
   <script>
 
+    // ── Mapping titre → id_artwork (base de données) ─────────────
+    const ARTWORK_IDS = {
+      "Composition en Or et Nuit": 1,
+      "Aquarelle du Crépuscule":   2,
+      "Paysage Intérieur III":     3,
+      "L'Éveil de la Forme":       4,
+      "Éclat de Marbre #2":        5,
+      "Mémoire Bleue":             6,
+      "Sérénité Urbaine #7":       7,
+      "Lumière du Nord":           8,
+      "Portrait de l'Absence":     9
+    };
+
+    function ouvrirOeuvre(card) {
+      const titre = card.querySelector(".card__title")?.textContent.trim();
+      const id = ARTWORK_IDS[titre];
+      if (id) window.location.href = `artwork.html?id=${id}`;
+    }
+
+    document.querySelectorAll(".card").forEach(card => {
+      card.addEventListener("click", () => ouvrirOeuvre(card));
+    });
+    document.querySelectorAll(".btn-s").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        ouvrirOeuvre(btn.closest(".card"));
+      });
+    });
+
     // ── Auth & panier depuis localStorage ────────────────────────
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     if (user) {
