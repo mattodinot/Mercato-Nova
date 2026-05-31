@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiche Œuvre — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* Layout deux colonnes */
+    .fiche {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 40px;
+      align-items: start;
+    }
+    /* Colonne gauche : image + infos */
+    .fiche__image {
+      width: 100%; border-radius: 12px;
+      background: #E5E7EB; aspect-ratio: 4/3;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 48px;
+    }
+    .fiche__infos {
+      background: var(--blanc); border-radius: 12px;
+      padding: 24px; margin-top: 20px;
+      border: 1px solid #F0EDE6;
+    }
+    .fiche__infos-titre {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .fiche__info-ligne {
+      display: flex; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid #F8F5EE;
+      font-size: 14px;
+    }
+    .fiche__info-ligne:last-child { border-bottom: none; }
+    .fiche__info-cle { color: var(--gris); }
+    .fiche__info-val { font-weight: 500; }
+
+    /* Colonne droite : panneau d'achat */
+    .panneau {
+      background: var(--blanc); border-radius: 12px;
+      padding: 28px; border: 1px solid #F0EDE6;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .panneau--enchere { border: 2px solid var(--bordeau); }
+    .panneau--nego    { border: 2px solid var(--bleu); }
+
+    .panneau__prix-label { font-size: 12px; color: var(--gris); margin-bottom: 4px; }
+    .panneau__prix {
+      font-size: 38px; font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .panneau__prix--enchere { color: var(--bordeau); }
+    .panneau__prix--nego    { color: var(--bleu); }
+
+    .panneau__description {
+      font-size: 14px; color: #374151;
+      line-height: 1.7; margin-bottom: 20px;
+      padding: 14px; background: var(--fond);
+      border-radius: 8px;
+    }
+    .panneau__timer {
+      background: #FEF3C7; border: 1px solid #FCD34D;
+      border-radius: 8px; padding: 12px 16px;
+      margin-bottom: 16px; text-align: center;
+    }
+    .panneau__timer-label { font-size: 12px; color: var(--gris); }
+    .panneau__timer-compte {
+      font-size: 28px; font-weight: 800;
+      color: var(--bordeau); font-variant-numeric: tabular-nums;
+    }
+    .panneau__offres {
+      font-size: 13px; color: var(--gris);
+      margin-bottom: 16px;
+    }
+    /* Champ de saisie montant enchère */
+    .panneau__saisie {
+      display: flex; gap: 8px; margin-bottom: 12px;
+    }
+    .panneau__saisie input {
+      flex: 1; padding: 11px 14px;
+      border: 1.5px solid #E5E7EB; border-radius: 8px;
+      font-size: 16px; font-family: inherit;
+    }
+    .panneau__saisie input:focus {
+      outline: none; border-color: var(--bordeau);
+    }
+    /* Historique des offres */
+    .historique { margin-top: 20px; }
+    .historique__titre {
+      font-size: 13px; font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .historique__ligne {
+      display: flex; justify-content: space-between;
+      padding: 6px 0; font-size: 13px;
+      border-bottom: 1px solid #F3F0E8;
+    }
+    /* Fil d'Ariane */
+    .breadcrumb {
+      font-size: 13px; color: var(--gris);
+      margin-bottom: 28px; display: flex;
+      gap: 8px; align-items: center;
+    }
+    .breadcrumb a { color: var(--gris); }
+    .breadcrumb a:hover { color: var(--noir); }
+    /* Boutons favoris / partager */
+    .fiche__actions {
+      display: flex; gap: 10px; margin-top: 12px;
+    }
+    /* Zone négociation */
+    .nego-chat {
+      margin-top: 16px;
+    }
+    .nego-bulle {
+      padding: 10px 14px; border-radius: 10px;
+      font-size: 13px; margin-bottom: 8px;
+      max-width: 85%;
+    }
+    .nego-bulle--vendeur {
+      background: #DBEAFE; border: 1px solid #93C5FD;
+      align-self: flex-start;
+    }
+    .nego-bulle--acheteur {
+      background: #D1FAE5; border: 1px solid #6EE7B7;
+      margin-left: auto;
+    }
+
+    @media (max-width: 900px) {
+      .fiche { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html" class="actif">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="panier.html"><button class="navbar__btn navbar__btn--outline">🛒 Panier <span id="nbPanier">0</span></button></a>
+      <span id="zoneProfil">
+        <a href="login.html"><button class="navbar__btn">Se connecter</button></a>
+      </span>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <!-- Fil d'Ariane -->
+    <div class="breadcrumb">
+      <a href="index.html">Accueil</a> ›
+      <a href="catalogue.html">Catalogue</a> ›
+      <span id="titreBreadcrumb">Chargement…</span>
+    </div>
+
+    <!-- Contenu chargé dynamiquement -->
+    <div id="contenuFiche">
+      <p style="text-align:center; color:var(--gris); padding: 60px 0;">
+        Chargement de l'œuvre…
+      </p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Récupération de l'ID de l'œuvre dans l'URL ──────────
+    // L'URL est de la forme : artwork.html?id=3
+    const params   = new URLSearchParams(window.location.search);
+    const idOeuvre = params.get('id');
+
+    // ── Panier stocké en localStorage ───────────────────────
+    function getPanier() {
+      return JSON.parse(localStorage.getItem('panier') || '[]');
+    }
+    function afficherNbPanier() {
+      document.getElementById('nbPanier').textContent = getPanier().length;
+    }
+    afficherNbPanier();
+
+    // ── Affichage navbar selon connexion ────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+      document.getElementById('zoneProfil').innerHTML =
+        `<a href="profil.html"><button class="navbar__btn">${user.prenom}</button></a>`;
+    }
+
+    // ── Chargement de l'œuvre depuis le backend ─────────────
+    async function chargerOeuvre() {
+      if (!idOeuvre) {
+        document.getElementById('contenuFiche').innerHTML =
+          '<p style="color:red;text-align:center;">Aucune œuvre sélectionnée.</p>';
+        return;
+      }
+
+      try {
+        const reponse = await fetch(
+          `mercato_nova_backend/api/artworks/show.php?id=${idOeuvre}`
+        );
+        const data = await reponse.json();
+
+        if (!data.success) {
+          document.getElementById('contenuFiche').innerHTML =
+            '<p style="color:red;text-align:center;">Œuvre introuvable.</p>';
+          return;
+        }
+
+        const oeuvre = data.artwork;
+        document.title = `${oeuvre.titre} — Mercato Nova`;
+        document.getElementById('titreBreadcrumb').textContent = oeuvre.titre;
+
+        // Rendu selon le type de vente
+        if (oeuvre.type_vente === 'immediat') {
+          afficherAchatImmédiat(oeuvre);
+        } else if (oeuvre.type_vente === 'enchere') {
+          chargerEtAfficherEnchere(oeuvre);
+        } else if (oeuvre.type_vente === 'negociation') {
+          afficherNegociation(oeuvre);
+        }
+
+      } catch (err) {
+        document.getElementById('contenuFiche').innerHTML =
+          '<p style="color:red;text-align:center;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Structure HTML commune à tous les types ──────────────
+    function htmlCommun(oeuvre, htmlPanneau) {
+      return `
+        <div class="fiche">
+
+          <!-- Colonne gauche -->
+          <div>
+            <div class="fiche__image">🖼️</div>
+
+            <!-- Informations détaillées -->
+            <div class="fiche__infos">
+              <div class="fiche__infos-titre">Informations</div>
+              ${info('Artiste',    oeuvre.nom + ' ' + oeuvre.prenom)}
+              ${info('Technique',  oeuvre.technique || '—')}
+              ${info('Dimensions', oeuvre.dimensions || '—')}
+              ${info('Année',      oeuvre.annee || '—')}
+              ${info('État',       oeuvre.etat)}
+              ${info('Livraison',  oeuvre.livraison)}
+              ${info('Vues',       oeuvre.vues)}
+            </div>
+          </div>
+
+          <!-- Colonne droite : panneau d'achat -->
+          <div>
+            ${htmlPanneau}
+            <div class="fiche__actions">
+              <button class="btn btn--outline" onclick="toggleFavori(${oeuvre.id_artwork})" style="flex:1">
+                ♡ Sauvegarder
+              </button>
+              <button class="btn btn--outline" style="flex:1">
+                ↗ Partager
+              </button>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function info(cle, val) {
+      return `<div class="fiche__info-ligne">
+        <span class="fiche__info-cle">${cle}</span>
+        <span class="fiche__info-val">${val}</span>
+      </div>`;
+    }
+
+    // ── ACHAT IMMÉDIAT ────────────────────────────────────────
+    function afficherAchatImmédiat(oeuvre) {
+      const panneau = `
+        <div class="panneau">
+          <span class="badge badge--immediat">Achat immédiat</span>
+          <h1 style="margin:12px 0 4px;font-size:22px;">${oeuvre.titre}</h1>
+          <p style="color:var(--gris);font-size:14px;margin-bottom:16px;">par ${oeuvre.nom} ${oeuvre.prenom}</p>
+          <p class="panneau__description">${oeuvre.description || ''}</p>
+          <div class="panneau__prix-label">Prix</div>
+          <div class="panneau__prix">${Number(oeuvre.prix_base).toLocaleString('fr-FR')} €</div>
+          <button class="btn btn--noir btn--full" onclick="ajouterPanier(${JSON.stringify(oeuvre).replace(/"/g,'&quot;')})">
+            🛒 Ajouter au panier
+          </button>
+          <button class="btn btn--or btn--full" style="margin-top:10px;" onclick="acheterMaintenant(${oeuvre.id_artwork})">
+            ⚡ Acheter maintenant
+          </button>
+          <p style="font-size:12px;color:var(--gris);text-align:center;margin-top:10px;">
+            🔒 Paiement simulé sécurisé
+          </p>
+        </div>
+      `;
+      document.getElementById('contenuFiche').innerHTML = htmlCommun(oeuvre, panneau);
+    }
+
+    // ── ENCHÈRE ───────────────────────────────────────────────
+    async function chargerEtAfficherEnchere(oeuvre) {
+      // On charge aussi l'historique des offres
+      let offres = [];
+      try {
+        const r = await fetch(`mercato_nova_backend/api/bids/index.php?id_artwork=${oeuvre.id_artwork}`);
+        const d = await r.json();
+        if (d.success) offres = d.bids;
+      } catch(e) {}
+
+      const meilleureOffre = offres.length > 0
+        ? offres[0].montant
+        : oeuvre.prix_base;
+
+      const panneauEnchere = `
+        <div class="panneau panneau--enchere">
+          <span class="badge badge--enchere">Enchère en cours</span>
+          <h1 style="margin:12px 0 4px;font-size:22px;">${oeuvre.titre}</h1>
+          <p style="color:var(--gris);font-size:14px;margin-bottom:16px;">par ${oeuvre.nom} ${oeuvre.prenom}</p>
+
+          <!-- Timer -->
+          <div class="panneau__timer">
+            <div class="panneau__timer-label">Fin de l'enchère dans</div>
+            <div class="panneau__timer-compte" id="timerEnchere">--:--:--</div>
+          </div>
+
+          <div class="panneau__prix-label">Enchère actuelle</div>
+          <div class="panneau__prix panneau__prix--enchere" id="prixActuel">
+            ${Number(meilleureOffre).toLocaleString('fr-FR')} €
+          </div>
+          <div class="panneau__offres">${offres.length} offre(s) · Prix de départ : ${Number(oeuvre.prix_base).toLocaleString('fr-FR')} €</div>
+
+          <!-- Saisie du montant -->
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">
+            Votre offre (min. ${(Number(meilleureOffre) + Number(oeuvre.surenchere_min || 50)).toLocaleString('fr-FR')} €)
+          </label>
+          <div class="panneau__saisie">
+            <input type="number" id="montantOffre"
+              min="${Number(meilleureOffre) + Number(oeuvre.surenchere_min || 50)}"
+              step="10"
+              placeholder="${Number(meilleureOffre) + Number(oeuvre.surenchere_min || 50)}" />
+            <span style="align-self:center;font-weight:700;">€</span>
+          </div>
+          <button class="btn btn--bordeau btn--full" onclick="placerOffre(${oeuvre.id_artwork})">
+            🔨 Enchérir maintenant
+          </button>
+          <p style="font-size:12px;color:var(--gris);text-align:center;margin-top:10px;">
+            🔒 Transaction sécurisée
+          </p>
+
+          <!-- Historique des offres -->
+          <div class="historique">
+            <div class="historique__titre">Historique des offres</div>
+            ${offres.length === 0
+              ? '<p style="font-size:13px;color:var(--gris);">Aucune offre pour le moment.</p>'
+              : offres.map(o => `
+                  <div class="historique__ligne">
+                    <span>Enchérisseur #${o.id_user}</span>
+                    <span style="font-weight:700;">${Number(o.montant).toLocaleString('fr-FR')} €</span>
+                    <span style="color:var(--gris);font-size:12px;">${new Date(o.date_offre).toLocaleString('fr-FR')}</span>
+                  </div>
+                `).join('')
+            }
+          </div>
+        </div>
+      `;
+
+      document.getElementById('contenuFiche').innerHTML = htmlCommun(oeuvre, panneauEnchere);
+
+      // Démarrage du timer
+      if (oeuvre.date_fin_enchere) {
+        demarrerTimer(new Date(oeuvre.date_fin_enchere));
+      }
+    }
+
+    // ── NÉGOCIATION ───────────────────────────────────────────
+    function afficherNegociation(oeuvre) {
+      const panneau = `
+        <div class="panneau panneau--nego">
+          <span class="badge badge--nego">Négociation</span>
+          <h1 style="margin:12px 0 4px;font-size:22px;">${oeuvre.titre}</h1>
+          <p style="color:var(--gris);font-size:14px;margin-bottom:16px;">par ${oeuvre.nom} ${oeuvre.prenom}</p>
+          <p class="panneau__description">${oeuvre.description || ''}</p>
+
+          <div class="panneau__prix-label">Prix vendeur</div>
+          <div class="panneau__prix panneau__prix--nego">
+            ${Number(oeuvre.prix_base).toLocaleString('fr-FR')} €
+          </div>
+
+          <p style="font-size:13px;color:var(--gris);margin-bottom:16px;">
+            💬 Ce vendeur accepte les négociations.
+            Maximum <strong>5 échanges</strong>, expiration après <strong>48h</strong>.
+          </p>
+
+          <!-- Formulaire de négociation -->
+          <div id="zoneNego">
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">
+              Votre offre initiale (€)
+            </label>
+            <div class="panneau__saisie">
+              <input type="number" id="montantNego"
+                placeholder="${Math.round(oeuvre.prix_base * 0.8)}"
+                min="1" step="10" />
+              <span style="align-self:center;font-weight:700;">€</span>
+            </div>
+            <button class="btn btn--bleu btn--full" onclick="envoyerNego(${oeuvre.id_artwork})">
+              💬 Envoyer mon offre
+            </button>
+          </div>
+
+          <div style="margin-top:10px;">
+            <button class="btn btn--noir btn--full" onclick="ajouterPanier(${JSON.stringify(oeuvre).replace(/"/g,'&quot;')})">
+              Acheter au prix demandé (${Number(oeuvre.prix_base).toLocaleString('fr-FR')} €)
+            </button>
+          </div>
+        </div>
+      `;
+      document.getElementById('contenuFiche').innerHTML = htmlCommun(oeuvre, panneau);
+    }
+
+    // ── Timer enchère ─────────────────────────────────────────
+    function demarrerTimer(dateFin) {
+      function tick() {
+        const el   = document.getElementById('timerEnchere');
+        if (!el) return;
+        const diff = dateFin - Date.now();
+        if (diff <= 0) { el.textContent = 'Terminée'; return; }
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+        if (diff < 3600000) el.style.color = 'var(--rouge)';
+      }
+      const pad = n => String(n).padStart(2,'0');
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    // ── Actions utilisateur ───────────────────────────────────
+    function ajouterPanier(oeuvre) {
+      if (!user) { window.location.href = 'login.html'; return; }
+      const panier = getPanier();
+      // Vérifie que l'œuvre n'est pas déjà dans le panier
+      if (!panier.find(p => p.id_artwork === oeuvre.id_artwork)) {
+        panier.push(oeuvre);
+        localStorage.setItem('panier', JSON.stringify(panier));
+        afficherNbPanier();
+        alert(`"${oeuvre.titre}" ajouté au panier !`);
+      } else {
+        alert('Cette œuvre est déjà dans votre panier.');
+      }
+    }
+
+    function acheterMaintenant(idArtwork) {
+      if (!user) { window.location.href = 'login.html'; return; }
+      window.location.href = `panier.html?acheter=${idArtwork}`;
+    }
+
+    async function placerOffre(idArtwork) {
+      if (!user) { window.location.href = 'login.html'; return; }
+      const montant = parseFloat(document.getElementById('montantOffre').value);
+      if (!montant || montant <= 0) {
+        alert('Veuillez saisir un montant valide.');
+        return;
+      }
+      try {
+        const r = await fetch('mercato_nova_backend/api/bids/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_artwork: idArtwork, montant })
+        });
+        const d = await r.json();
+        if (d.success) {
+          alert('✅ Votre offre a été enregistrée !');
+          location.reload();
+        } else {
+          alert('❌ ' + (d.error || 'Erreur lors de l\'enchère.'));
+        }
+      } catch(e) {
+        alert('Erreur de connexion au serveur.');
+      }
+    }
+
+    async function envoyerNego(idArtwork) {
+      if (!user) { window.location.href = 'login.html'; return; }
+      const montant = parseFloat(document.getElementById('montantNego').value);
+      if (!montant || montant <= 0) {
+        alert('Veuillez saisir un montant valide.');
+        return;
+      }
+      try {
+        const r = await fetch('mercato_nova_backend/api/negotiations/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_artwork: idArtwork, montant_propose: montant })
+        });
+        const d = await r.json();
+        if (d.success) {
+          alert('✅ Votre offre de négociation a été envoyée !');
+          document.getElementById('zoneNego').innerHTML =
+            '<p style="color:var(--vert);font-weight:600;">✅ Offre envoyée ! Le vendeur vous répondra sous 48h.</p>';
+        } else {
+          alert('❌ ' + (d.error || 'Erreur.'));
+        }
+      } catch(e) {
+        alert('Erreur de connexion au serveur.');
+      }
+    }
+
+    function toggleFavori(id) {
+      if (!user) { window.location.href = 'login.html'; return; }
+      alert('Œuvre sauvegardée dans vos favoris ! (fonctionnalité à connecter)');
+    }
+
+    // ── Lancement ─────────────────────────────────────────────
+    chargerOeuvre();
+  </script>
+
+</body>
+</html>

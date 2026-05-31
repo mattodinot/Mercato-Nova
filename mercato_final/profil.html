@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Profil — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* En-tête profil */
+    .profil-header {
+      background: var(--noir); padding: 40px 24px; color: white;
+    }
+    .profil-header__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .profil-header__avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--or); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 32px; flex-shrink: 0;
+    }
+    .profil-header__nom { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .profil-header__role {
+      background: rgba(201,168,76,0.2); color: var(--or);
+      border: 1px solid rgba(201,168,76,0.4); border-radius: 20px;
+      padding: 3px 12px; font-size: 12px; font-weight: 600;
+      display: inline-block;
+    }
+    .profil-header__email { color: #9CA3AF; font-size: 14px; margin-top: 6px; }
+
+    /* Onglets */
+    .onglets {
+      background: var(--blanc); border-bottom: 1px solid #F0EDE6;
+      padding: 0 24px;
+    }
+    .onglets__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; gap: 0;
+    }
+    .onglet {
+      padding: 16px 20px; font-size: 14px; font-weight: 500;
+      color: var(--gris); background: transparent; border: none;
+      border-bottom: 3px solid transparent; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .onglet.actif {
+      color: var(--noir); border-bottom-color: var(--noir);
+    }
+    .onglet:hover { color: var(--noir); }
+
+    /* Contenu des onglets */
+    .tab-contenu { display: none; }
+    .tab-contenu.actif { display: block; }
+
+    /* Ligne de commande */
+    .commande-ligne {
+      background: var(--blanc); border-radius: 10px;
+      border: 1px solid #F0EDE6; padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex; justify-content: space-between;
+      align-items: center;
+    }
+    .commande-ligne__titre { font-weight: 600; margin-bottom: 4px; }
+    .commande-ligne__meta { font-size: 13px; color: var(--gris); }
+    .commande-ligne__prix { font-size: 18px; font-weight: 700; }
+    .statut {
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+    }
+    .statut--confirmee { background: #D1FAE5; color: #065F46; }
+    .statut--en_attente { background: #FEF3C7; color: #92400E; }
+    .statut--annulee { background: #FEE2E2; color: #991B1B; }
+
+    /* Mes annonces (vendeur) */
+    .annonce-ligne {
+      background: var(--blanc); border-radius: 10px;
+      border: 1px solid #F0EDE6; padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .annonce-ligne__titre { font-weight: 600; margin-bottom: 4px; }
+    .annonce-ligne__meta { font-size: 13px; color: var(--gris); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="panier.html"><button class="navbar__btn navbar__btn--outline">🛒 Panier</button></a>
+      <button class="navbar__btn" onclick="deconnecter()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <!-- EN-TÊTE PROFIL -->
+  <div class="profil-header">
+    <div class="profil-header__inner">
+      <div class="profil-header__avatar" id="avatarInitiales">?</div>
+      <div>
+        <div class="profil-header__nom" id="nomUtilisateur">Chargement…</div>
+        <span class="profil-header__role" id="roleUtilisateur">—</span>
+        <div class="profil-header__email" id="emailUtilisateur">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLETS -->
+  <div class="onglets">
+    <div class="onglets__inner">
+      <button class="onglet actif" onclick="changerOnglet('commandes', this)">
+        📦 Mes commandes
+      </button>
+      <button class="onglet" onclick="changerOnglet('encheres', this)">
+        🔨 Mes enchères
+      </button>
+      <button class="onglet" onclick="changerOnglet('negociations', this)">
+        💬 Mes négociations
+      </button>
+      <button class="onglet" onclick="changerOnglet('notifications', this)" id="ongletNotifs">
+        🔔 Notifications
+      </button>
+      <!-- Onglet annonces uniquement pour vendeurs -->
+      <button class="onglet" id="ongletAnnonces" style="display:none;"
+        onclick="changerOnglet('annonces', this)">
+        🎨 Mes annonces
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENU DES ONGLETS -->
+  <div class="page-wrapper">
+
+    <!-- Commandes -->
+    <div class="tab-contenu actif" id="tab-commandes">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px;">Mes commandes</h2>
+      <div id="listeCommandes"><p style="color:var(--gris);">Chargement…</p></div>
+    </div>
+
+    <!-- Enchères en cours -->
+    <div class="tab-contenu" id="tab-encheres">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px;">Mes enchères en cours</h2>
+      <div id="listeEncheres"><p style="color:var(--gris);">Chargement…</p></div>
+    </div>
+
+    <!-- Négociations -->
+    <div class="tab-contenu" id="tab-negociations">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px;">Mes négociations</h2>
+      <div id="listeNegociations"><p style="color:var(--gris);">Chargement…</p></div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="tab-contenu" id="tab-notifications">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px;">Mes notifications</h2>
+      <div id="listeNotifications"><p style="color:var(--gris);">Chargement…</p></div>
+    </div>
+
+    <!-- Annonces (vendeur seulement) -->
+    <div class="tab-contenu" id="tab-annonces">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="font-size:20px;font-weight:700;">Mes annonces</h2>
+        <a href="creer-annonce.html" class="btn btn--or">+ Nouvelle annonce</a>
+      </div>
+      <div id="listeAnnonces"><p style="color:var(--gris);">Chargement…</p></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Vérification connexion ────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user) {
+      window.location.href = 'login.html';
+    }
+
+    // ── Affichage infos utilisateur ───────────────────────────
+    document.getElementById('nomUtilisateur').textContent =
+      `${user.prenom} ${user.nom}`;
+    document.getElementById('emailUtilisateur').textContent = user.email;
+    document.getElementById('roleUtilisateur').textContent =
+      { admin: 'Administrateur', vendeur: 'Artiste / Vendeur', acheteur: 'Acheteur', galerie: 'Galerie' }[user.role] || user.role;
+    document.getElementById('avatarInitiales').textContent =
+      (user.prenom[0] + user.nom[0]).toUpperCase();
+
+    // Afficher l'onglet annonces si vendeur ou admin
+    if (user.role === 'vendeur' || user.role === 'admin' || user.role === 'galerie') {
+      document.getElementById('ongletAnnonces').style.display = 'block';
+    }
+
+    // ── Gestion des onglets ───────────────────────────────────
+    function changerOnglet(nom, btn) {
+      // Masquer tous les contenus
+      document.querySelectorAll('.tab-contenu').forEach(el => el.classList.remove('actif'));
+      document.querySelectorAll('.onglet').forEach(el => el.classList.remove('actif'));
+      // Afficher le bon
+      document.getElementById(`tab-${nom}`).classList.add('actif');
+      btn.classList.add('actif');
+      // Charger les données si besoin
+      if (nom === 'commandes')     chargerCommandes();
+      if (nom === 'encheres')      chargerEncheres();
+      if (nom === 'negociations')  chargerNegociations();
+      if (nom === 'notifications') chargerNotifications();
+      if (nom === 'annonces')      chargerAnnonces();
+    }
+
+    // ── Chargement des commandes ──────────────────────────────
+    async function chargerCommandes() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/orders/index.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeCommandes');
+
+        if (!data.success || data.orders.length === 0) {
+          zone.innerHTML = '<p style="color:var(--gris);">Aucune commande pour le moment.</p>';
+          return;
+        }
+
+        zone.innerHTML = data.orders.map(o => `
+          <div class="commande-ligne">
+            <div>
+              <div class="commande-ligne__titre">${o.titre}</div>
+              <div class="commande-ligne__meta">
+                ${new Date(o.date_achat).toLocaleDateString('fr-FR')} · ${o.mode_achat}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div class="commande-ligne__prix">
+                ${Number(o.montant_final).toLocaleString('fr-FR')} €
+              </div>
+              <span class="statut statut--${o.statut}">
+                ${o.statut === 'confirmee' ? 'Confirmée' : o.statut === 'en_attente' ? 'En attente' : 'Annulée'}
+              </span>
+            </div>
+          </div>
+        `).join('');
+
+      } catch(e) {
+        document.getElementById('listeCommandes').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Chargement des enchères ───────────────────────────────
+    async function chargerEncheres() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/bids/mes_offres.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeEncheres');
+
+        if (!data.success || data.bids.length === 0) {
+          zone.innerHTML = '<p style="color:var(--gris);">Aucune enchère en cours.</p>';
+          return;
+        }
+
+        zone.innerHTML = data.bids.map(b => `
+          <div class="commande-ligne">
+            <div>
+              <div class="commande-ligne__titre">${b.titre}</div>
+              <div class="commande-ligne__meta">
+                Votre offre : <strong>${Number(b.montant).toLocaleString('fr-FR')} €</strong> ·
+                ${new Date(b.date_offre).toLocaleDateString('fr-FR')}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              ${b.est_gagnante ? '<span class="statut statut--confirmee">🏆 Gagnante</span>' : ''}
+              <a href="artwork.html?id=${b.id_artwork}" class="btn btn--outline" style="padding:6px 14px;font-size:13px;">
+                Voir
+              </a>
+            </div>
+          </div>
+        `).join('');
+
+      } catch(e) {
+        document.getElementById('listeEncheres').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Chargement des négociations ───────────────────────────
+    async function chargerNegociations() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/negotiations/mes_negociations.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeNegociations');
+
+        if (!data.success || data.negotiations.length === 0) {
+          zone.innerHTML = '<p style="color:var(--gris);">Aucune négociation.</p>';
+          return;
+        }
+
+        const statuts = {
+          en_cours: ['En cours', 'statut--en_attente'],
+          accepte:  ['Acceptée', 'statut--confirmee'],
+          refuse:   ['Refusée',  'statut--annulee'],
+          expire:   ['Expirée',  'statut--annulee'],
+          abandonne:['Abandonnée','statut--annulee'],
+        };
+
+        zone.innerHTML = data.negotiations.map(n => {
+          const [label, cls] = statuts[n.statut] || ['—', ''];
+          return `
+            <div class="commande-ligne">
+              <div>
+                <div class="commande-ligne__titre">${n.titre}</div>
+                <div class="commande-ligne__meta">
+                  ${n.nb_echanges}/5 échanges ·
+                  Dernière offre : ${Number(n.montant_propose).toLocaleString('fr-FR')} €
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span class="statut ${cls}">${label}</span>
+                <a href="artwork.html?id=${n.id_artwork}" class="btn btn--outline" style="padding:6px 14px;font-size:13px;">
+                  Voir
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch(e) {
+        document.getElementById('listeNegociations').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Chargement des notifications ──────────────────────────
+    async function chargerNotifications() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/notifications/index.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeNotifications');
+
+        if (!data.success || data.notifications.length === 0) {
+          zone.innerHTML = '<p style="color:var(--gris);">Aucune notification.</p>';
+          return;
+        }
+
+        zone.innerHTML = data.notifications.map(n => `
+          <div class="commande-ligne" style="${!n.lu ? 'border-left:3px solid var(--or);' : ''}">
+            <div>
+              <div class="commande-ligne__titre" style="${!n.lu ? 'font-weight:700;' : 'font-weight:400;'}">
+                ${n.message}
+              </div>
+              <div class="commande-ligne__meta">
+                ${new Date(n.date_creation).toLocaleString('fr-FR')}
+              </div>
+            </div>
+            ${!n.lu ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--or);flex-shrink:0;"></span>' : ''}
+          </div>
+        `).join('');
+
+        // Marquer toutes comme lues
+        fetch('mercato_nova_backend/api/notifications/read.php', { method: 'POST' });
+
+      } catch(e) {
+        document.getElementById('listeNotifications').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Chargement des annonces (vendeur) ─────────────────────
+    async function chargerAnnonces() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/artworks/mes_annonces.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeAnnonces');
+
+        if (!data.success || data.artworks.length === 0) {
+          zone.innerHTML = `
+            <p style="color:var(--gris);margin-bottom:16px;">Aucune annonce publiée.</p>
+            <a href="creer-annonce.html" class="btn btn--or">+ Créer ma première annonce</a>
+          `;
+          return;
+        }
+
+        const statuts = {
+          en_attente: ['En attente de validation', 'statut--en_attente'],
+          active:     ['Active', 'statut--confirmee'],
+          vendue:     ['Vendue', 'statut--annulee'],
+          rejetee:    ['Rejetée', 'statut--annulee'],
+        };
+
+        zone.innerHTML = data.artworks.map(a => {
+          const [label, cls] = statuts[a.statut] || ['—', ''];
+          return `
+            <div class="annonce-ligne">
+              <div>
+                <div class="annonce-ligne__titre">${a.titre}</div>
+                <div class="annonce-ligne__meta">
+                  ${a.type_vente} · ${Number(a.prix_base).toLocaleString('fr-FR')} € · ${a.vues} vues
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span class="statut ${cls}">${label}</span>
+                <a href="artwork.html?id=${a.id_artwork}" class="btn btn--outline" style="padding:6px 14px;font-size:13px;">
+                  Voir
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch(e) {
+        document.getElementById('listeAnnonces').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Déconnexion ───────────────────────────────────────────
+    async function deconnecter() {
+      try {
+        await fetch('mercato_nova_backend/api/auth/logout.php', { method: 'POST' });
+      } catch(e) {}
+      localStorage.removeItem('user');
+      localStorage.removeItem('panier');
+      window.location.href = 'index.html';
+    }
+
+    // ── Chargement initial ────────────────────────────────────
+    chargerCommandes();
+  </script>
+
+</body>
+</html>

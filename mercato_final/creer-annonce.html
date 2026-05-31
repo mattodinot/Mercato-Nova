@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Déposer une annonce — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* En-tête */
+    .entete {
+      background: var(--noir); padding: 36px 24px;
+      border-bottom: 3px solid var(--or);
+    }
+    .entete__inner { max-width: 860px; margin: 0 auto; }
+    .entete__titre { font-size: 28px; font-weight: 700; color: #F8F5EE; margin-bottom: 6px; }
+    .entete__sous-titre { color: #9CA3AF; font-size: 14px; }
+
+    /* Formulaire centré */
+    .form-wrapper {
+      max-width: 860px; margin: 40px auto; padding: 0 24px 60px;
+    }
+
+    /* Carte section */
+    .section-carte {
+      background: var(--blanc); border-radius: 12px;
+      border: 1px solid #F0EDE6; padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .section-carte__titre {
+      font-size: 15px; font-weight: 700;
+      color: var(--noir); margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--or);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Grille 2 colonnes */
+    .grille-2 {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+
+    /* Boutons de choix (type de vente, état) */
+    .choix-groupe { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .choix-groupe input[type="radio"] { display: none; }
+    .choix-groupe label {
+      flex: 1; min-width: 100px; text-align: center;
+      padding: 12px 8px; border: 1.5px solid #E5E7EB;
+      border-radius: 9px; cursor: pointer;
+      font-size: 13px; font-weight: 500;
+      transition: all 0.2s; color: var(--gris);
+    }
+    .choix-groupe input[type="radio"]:checked + label {
+      border-color: var(--noir);
+      background: var(--noir); color: var(--or);
+    }
+
+    /* Zone conditionnelle enchère */
+    .zone-enchere {
+      background: #FDF0F3; border: 1px solid #FECDD3;
+      border-radius: 10px; padding: 20px; margin-top: 16px;
+      display: none;
+    }
+    .zone-enchere.visible { display: block; }
+    .zone-enchere__titre {
+      font-size: 13px; font-weight: 700;
+      color: var(--bordeau); margin-bottom: 14px;
+    }
+
+    /* Barre d'étapes */
+    .etapes {
+      display: flex; justify-content: center;
+      gap: 0; margin-bottom: 32px;
+    }
+    .etape {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; font-size: 13px; font-weight: 500;
+      color: var(--gris); background: var(--blanc);
+      border: 1px solid #E5E7EB;
+    }
+    .etape:first-child { border-radius: 8px 0 0 8px; }
+    .etape:last-child  { border-radius: 0 8px 8px 0; }
+    .etape.active {
+      background: var(--noir); color: var(--or);
+      border-color: var(--noir);
+    }
+    .etape__num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: currentColor; color: var(--blanc);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .etape.active .etape__num { background: var(--or); color: var(--noir); }
+
+    /* Aperçu */
+    .apercu {
+      background: var(--fond); border: 1.5px dashed #D1D5DB;
+      border-radius: 12px; padding: 24px; text-align: center;
+      color: var(--gris); font-size: 14px;
+    }
+    .apercu__img {
+      width: 100%; max-height: 200px;
+      border-radius: 8px; object-fit: cover;
+      display: none; margin-bottom: 12px;
+    }
+
+    /* Footer du formulaire */
+    .form-footer {
+      display: flex; justify-content: space-between;
+      align-items: center; padding-top: 20px;
+      border-top: 1px solid #F0EDE6;
+    }
+
+    @media (max-width: 600px) {
+      .grille-2 { grid-template-columns: 1fr; }
+      .choix-groupe label { min-width: 80px; padding: 10px 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="profil.html"><button class="navbar__btn navbar__btn--outline">Mon espace</button></a>
+      <button class="navbar__btn" onclick="deconnecter()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <!-- EN-TÊTE -->
+  <div class="entete">
+    <div class="entete__inner">
+      <h1 class="entete__titre">🎨 Déposer une annonce</h1>
+      <p class="entete__sous-titre">
+        Votre annonce sera examinée par un administrateur avant publication (sous 24h).
+      </p>
+    </div>
+  </div>
+
+  <!-- FORMULAIRE -->
+  <div class="form-wrapper">
+
+    <!-- Barre d'étapes -->
+    <div class="etapes">
+      <div class="etape active" id="etape1">
+        <div class="etape__num">1</div> Informations
+      </div>
+      <div class="etape" id="etape2">
+        <div class="etape__num">2</div> Vente
+      </div>
+      <div class="etape" id="etape3">
+        <div class="etape__num">3</div> Confirmation
+      </div>
+    </div>
+
+    <div class="msg-erreur" id="msgErreur"></div>
+    <div class="msg-succes" id="msgSucces"></div>
+
+    <form id="formAnnonce">
+
+      <!-- ── SECTION 1 : Informations de l'œuvre ── -->
+      <div class="section-carte">
+        <div class="section-carte__titre">📋 Informations de l'œuvre</div>
+
+        <div class="champ">
+          <label for="titre">Titre de l'œuvre *</label>
+          <input type="text" id="titre" placeholder="Ex : Composition en Or et Nuit" required maxlength="200" />
+        </div>
+
+        <div class="champ">
+          <label for="description">Description</label>
+          <textarea id="description" placeholder="Décrivez votre œuvre : histoire, matériaux utilisés, inspiration…" rows="4"></textarea>
+        </div>
+
+        <div class="grille-2">
+          <div class="champ">
+            <label for="technique">Technique</label>
+            <input type="text" id="technique" placeholder="Ex : Huile sur toile, Aquarelle…" />
+          </div>
+          <div class="champ">
+            <label for="dimensions">Dimensions</label>
+            <input type="text" id="dimensions" placeholder="Ex : 80 × 60 cm" />
+          </div>
+        </div>
+
+        <div class="grille-2">
+          <div class="champ">
+            <label for="annee">Année de création</label>
+            <input type="number" id="annee" placeholder="2024" min="1900" max="2026" />
+          </div>
+          <div class="champ">
+            <label for="livraison">Livraison</label>
+            <select id="livraison">
+              <option value="Livraison gratuite">Livraison gratuite</option>
+              <option value="Expédition rapide">Expédition rapide</option>
+              <option value="Expédition sécurisée">Expédition sécurisée (œuvres volumineuses)</option>
+              <option value="Retrait en main propre">Retrait en main propre uniquement</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- État de l'œuvre -->
+        <div class="champ">
+          <label>État de l'œuvre *</label>
+          <div class="choix-groupe">
+            <input type="radio" name="etat" id="etat_neuf" value="neuf" checked />
+            <label for="etat_neuf">✨ Neuf</label>
+
+            <input type="radio" name="etat" id="etat_tbe" value="tres_bon" />
+            <label for="etat_tbe">👍 Très bon état</label>
+
+            <input type="radio" name="etat" id="etat_bon" value="bon" />
+            <label for="etat_bon">👌 Bon état</label>
+
+            <input type="radio" name="etat" id="etat_occ" value="occasion" />
+            <label for="etat_occ">🔄 Occasion</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2 : Mode de vente et prix ── -->
+      <div class="section-carte">
+        <div class="section-carte__titre">💰 Mode de vente et prix</div>
+
+        <!-- Type de vente -->
+        <div class="champ">
+          <label>Type de vente *</label>
+          <div class="choix-groupe">
+            <input type="radio" name="type_vente" id="type_immediat" value="immediat" checked
+              onchange="toggleZoneEnchere()" />
+            <label for="type_immediat">🛒 Achat immédiat</label>
+
+            <input type="radio" name="type_vente" id="type_enchere" value="enchere"
+              onchange="toggleZoneEnchere()" />
+            <label for="type_enchere">🔨 Enchère</label>
+
+            <input type="radio" name="type_vente" id="type_nego" value="negociation"
+              onchange="toggleZoneEnchere()" />
+            <label for="type_nego">💬 Négociation</label>
+          </div>
+        </div>
+
+        <!-- Prix de base -->
+        <div class="champ">
+          <label for="prix_base" id="labelPrix">Prix de vente (€) *</label>
+          <input type="number" id="prix_base" placeholder="Ex : 450" min="1" step="0.01" required />
+        </div>
+
+        <!-- Zone paramètres enchère (visible uniquement si type = enchere) -->
+        <div class="zone-enchere" id="zoneEnchere">
+          <div class="zone-enchere__titre">⚙️ Paramètres de l'enchère</div>
+          <div class="grille-2">
+            <div class="champ">
+              <label for="surenchere_min">Surenchère minimale (€)</label>
+              <input type="number" id="surenchere_min" placeholder="50" min="1" step="1" value="50" />
+            </div>
+            <div class="champ">
+              <label for="duree_enchere">Durée de l'enchère</label>
+              <select id="duree_enchere">
+                <option value="24">24 heures</option>
+                <option value="48" selected>48 heures</option>
+                <option value="168">7 jours</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--bordeau);margin-top:4px;">
+            ℹ️ L'enchère démarrera dès la validation de votre annonce par un administrateur.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3 : Aperçu ── -->
+      <div class="section-carte">
+        <div class="section-carte__titre">👁 Aperçu de votre annonce</div>
+        <div class="apercu" id="apercu">
+          <p>Remplissez le formulaire pour voir l'aperçu de votre annonce.</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="form-footer">
+        <a href="profil.html" class="btn btn--outline">← Annuler</a>
+        <button type="submit" class="btn btn--or" id="btnSoumettre">
+          📤 Soumettre l'annonce
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Vérification de connexion ────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user) {
+      window.location.href = 'login.html';
+    }
+
+    // Seuls les vendeurs/galeries/admins peuvent déposer
+    if (!['vendeur', 'galerie', 'admin'].includes(user.role)) {
+      alert('Seuls les vendeurs peuvent déposer des annonces.');
+      window.location.href = 'profil.html';
+    }
+
+    // ── Affichage/masquage zone enchère ──────────────────────
+    function toggleZoneEnchere() {
+      const type       = document.querySelector('input[name="type_vente"]:checked').value;
+      const zone       = document.getElementById('zoneEnchere');
+      const labelPrix  = document.getElementById('labelPrix');
+
+      zone.classList.toggle('visible', type === 'enchere');
+
+      if (type === 'enchere') {
+        labelPrix.textContent = 'Prix de départ (€) *';
+      } else if (type === 'negociation') {
+        labelPrix.textContent = 'Prix demandé (€) *';
+      } else {
+        labelPrix.textContent = 'Prix de vente (€) *';
+      }
+
+      mettreAJourApercu();
+    }
+
+    // ── Mise à jour de l'aperçu en temps réel ─────────────────
+    function mettreAJourApercu() {
+      const titre      = document.getElementById('titre').value || 'Titre de l\'œuvre';
+      const technique  = document.getElementById('technique').value || '—';
+      const dimensions = document.getElementById('dimensions').value || '—';
+      const prix       = document.getElementById('prix_base').value || '0';
+      const type       = document.querySelector('input[name="type_vente"]:checked')?.value || 'immediat';
+
+      const typeLabels = {
+        immediat:    { label: 'Achat immédiat', color: 'var(--vert)' },
+        enchere:     { label: 'Enchère',         color: 'var(--bordeau)' },
+        negociation: { label: 'Négociation',     color: 'var(--bleu)' },
+      };
+      const t = typeLabels[type];
+
+      document.getElementById('apercu').innerHTML = `
+        <div style="text-align:left;background:var(--blanc);border-radius:10px;padding:16px;border:1px solid #F0EDE6;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div>
+              <div style="font-weight:700;font-size:16px;margin-bottom:4px;">${titre}</div>
+              <div style="font-size:12px;color:var(--gris);">par ${user.prenom} ${user.nom}</div>
+            </div>
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+                         border:1px solid ${t.color};color:${t.color};background:#F8F8F8;">
+              ${t.label}
+            </span>
+          </div>
+          <div style="font-size:12px;color:#9CA3AF;margin-bottom:12px;">
+            ${technique} · ${dimensions}
+          </div>
+          <div style="font-size:22px;font-weight:800;">
+            ${Number(prix).toLocaleString('fr-FR')} €
+          </div>
+          <div style="margin-top:10px;padding:8px;background:#FFF8E1;border-radius:6px;font-size:12px;color:#92400E;">
+            ⏳ En attente de validation par un administrateur
+          </div>
+        </div>
+      `;
+    }
+
+    // Écoute les changements sur les champs principaux
+    ['titre', 'technique', 'dimensions', 'prix_base'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', mettreAJourApercu);
+    });
+    document.querySelectorAll('input[name="type_vente"]').forEach(el => {
+      el.addEventListener('change', mettreAJourApercu);
+    });
+
+    // ── Soumission du formulaire ──────────────────────────────
+    document.getElementById('formAnnonce').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const msgErr = document.getElementById('msgErreur');
+      const msgOk  = document.getElementById('msgSucces');
+      msgErr.style.display = 'none';
+      msgOk.style.display  = 'none';
+
+      // Récupération de toutes les valeurs
+      const titre       = document.getElementById('titre').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const technique   = document.getElementById('technique').value.trim();
+      const dimensions  = document.getElementById('dimensions').value.trim();
+      const annee       = document.getElementById('annee').value || null;
+      const livraison   = document.getElementById('livraison').value;
+      const etat        = document.querySelector('input[name="etat"]:checked').value;
+      const type_vente  = document.querySelector('input[name="type_vente"]:checked').value;
+      const prix_base   = parseFloat(document.getElementById('prix_base').value);
+      const surenchere  = parseFloat(document.getElementById('surenchere_min').value) || 50;
+      const duree       = parseInt(document.getElementById('duree_enchere').value) || 48;
+
+      // Validation
+      if (!titre) {
+        msgErr.textContent = 'Le titre est obligatoire.';
+        msgErr.style.display = 'block';
+        return;
+      }
+
+      if (!prix_base || prix_base <= 0) {
+        msgErr.textContent = 'Le prix doit être supérieur à 0 €.';
+        msgErr.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('btnSoumettre');
+      btn.disabled    = true;
+      btn.textContent = 'Envoi en cours…';
+
+      try {
+        const reponse = await fetch('mercato_nova_backend/api/artworks/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            titre, description, technique, dimensions,
+            annee: annee ? parseInt(annee) : null,
+            etat, prix_base, type_vente, livraison,
+            surenchere_min: type_vente === 'enchere' ? surenchere : null,
+            duree_enchere:  type_vente === 'enchere' ? duree      : null,
+          })
+        });
+
+        const data = await reponse.json();
+
+        if (data.success) {
+          msgOk.textContent = '✅ Annonce soumise avec succès ! Elle sera publiée après validation.';
+          msgOk.style.display = 'block';
+
+          // Remise à zéro du formulaire
+          document.getElementById('formAnnonce').reset();
+          mettreAJourApercu();
+
+          // Redirection vers le profil après 2 secondes
+          setTimeout(() => { window.location.href = 'profil.html'; }, 2000);
+
+        } else {
+          msgErr.textContent = data.error || 'Une erreur est survenue.';
+          msgErr.style.display = 'block';
+        }
+
+      } catch(err) {
+        msgErr.textContent = 'Impossible de contacter le serveur.';
+        msgErr.style.display = 'block';
+      }
+
+      btn.disabled    = false;
+      btn.textContent = '📤 Soumettre l\'annonce';
+    });
+
+    // ── Déconnexion ───────────────────────────────────────────
+    function deconnecter() {
+      localStorage.removeItem('user');
+      localStorage.removeItem('panier');
+      window.location.href = 'index.html';
+    }
+
+    // Initialisation de l'aperçu
+    mettreAJourApercu();
+  </script>
+
+</body>
+</html>

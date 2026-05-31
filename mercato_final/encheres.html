@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enchères — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* En-tête de section */
+    .entete {
+      background: var(--bordeau); padding: 40px 24px; color: white;
+    }
+    .entete__inner { max-width: 1280px; margin: 0 auto; }
+    .entete__live {
+      display: inline-block; background: white; color: var(--bordeau);
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 5px; letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .entete__titre {
+      font-size: 36px; font-weight: 700; margin-bottom: 6px;
+    }
+    .entete__sous-titre { color: rgba(255,255,255,0.75); font-size: 15px; }
+
+    /* Grille des enchères */
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Carte d'enchère */
+    .carte-enchere {
+      background: var(--blanc); border-radius: 12px;
+      border: 2px solid var(--bordeau);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden; transition: transform 0.2s;
+    }
+    .carte-enchere:hover { transform: translateY(-4px); }
+    .carte-enchere__img {
+      height: 180px; background: #F5E8EC;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 48px;
+    }
+    .carte-enchere__corps { padding: 16px; }
+    .carte-enchere__artiste {
+      font-size: 11px; color: var(--gris); margin-bottom: 4px;
+    }
+    .carte-enchere__titre {
+      font-size: 16px; font-weight: 700; margin-bottom: 4px;
+    }
+    .carte-enchere__meta {
+      font-size: 12px; color: #9CA3AF; margin-bottom: 12px;
+    }
+    /* Timer dans la carte */
+    .carte-enchere__timer {
+      background: #FEF3C7; border: 1px solid #FCD34D;
+      border-radius: 6px; padding: 8px 12px;
+      margin-bottom: 12px; display: flex;
+      justify-content: space-between; align-items: center;
+      font-size: 13px;
+    }
+    .carte-enchere__timer-compte {
+      font-weight: 700; font-variant-numeric: tabular-nums;
+    }
+    .carte-enchere__timer--urgent .carte-enchere__timer-compte {
+      color: var(--rouge);
+    }
+    /* Prix */
+    .carte-enchere__prix-zone {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 14px;
+    }
+    .carte-enchere__prix-label { font-size: 11px; color: var(--gris); }
+    .carte-enchere__prix {
+      font-size: 24px; font-weight: 800; color: var(--bordeau);
+    }
+    .carte-enchere__nb-offres {
+      font-size: 12px; color: var(--gris);
+      text-align: right;
+    }
+    /* Footer de la carte */
+    .carte-enchere__footer {
+      border-top: 1px solid #F3F0E8; padding: 12px 16px;
+      display: flex; gap: 8px;
+    }
+
+    /* Info stats en haut */
+    .stats-bande {
+      background: var(--blanc); border-bottom: 1px solid #F0EDE6;
+      padding: 14px 24px;
+    }
+    .stats-bande__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; gap: 32px; align-items: center;
+      font-size: 14px; color: var(--gris);
+    }
+    .stats-bande__num { font-size: 20px; font-weight: 700; color: var(--bordeau); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html" class="actif">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="panier.html"><button class="navbar__btn navbar__btn--outline">🛒 Panier <span id="nbPanier">0</span></button></a>
+      <span id="zoneProfil">
+        <a href="login.html"><button class="navbar__btn">Se connecter</button></a>
+      </span>
+    </div>
+  </nav>
+
+  <!-- EN-TÊTE -->
+  <div class="entete">
+    <div class="entete__inner">
+      <div class="entete__live">⬤ LIVE</div>
+      <h1 class="entete__titre">Enchères en cours</h1>
+      <p class="entete__sous-titre">Misez et remportez des œuvres d'art originales</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bande">
+    <div class="stats-bande__inner">
+      <div>
+        <div class="stats-bande__num" id="nbEncheres">—</div>
+        Enchères actives
+      </div>
+      <div>
+        <div class="stats-bande__num" id="nbOffresTotal">—</div>
+        Offres au total
+      </div>
+      <div style="margin-left:auto; font-size:13px;">
+        Mise à jour automatique toutes les 30 secondes
+      </div>
+    </div>
+  </div>
+
+  <!-- GRILLE DES ENCHÈRES -->
+  <div class="page-wrapper">
+    <div class="grille" id="grille">
+      <p style="color:var(--gris);">Chargement des enchères…</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Initialisation ────────────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+      document.getElementById('zoneProfil').innerHTML =
+        `<a href="profil.html"><button class="navbar__btn">${user.prenom}</button></a>`;
+    }
+    document.getElementById('nbPanier').textContent =
+      JSON.parse(localStorage.getItem('panier') || '[]').length;
+
+    // ── Chargement des enchères depuis l'API ──────────────────
+    async function chargerEncheres() {
+      try {
+        const r = await fetch(
+          'mercato_nova_backend/api/artworks/index.php?type=enchere&statut=active'
+        );
+        const data = await r.json();
+
+        if (!data.success || data.artworks.length === 0) {
+          document.getElementById('grille').innerHTML =
+            '<p style="color:var(--gris);grid-column:1/-1;">Aucune enchère active pour le moment.</p>';
+          return;
+        }
+
+        // Mise à jour des stats
+        document.getElementById('nbEncheres').textContent = data.artworks.length;
+        let totalOffres = 0;
+        data.artworks.forEach(a => { totalOffres += parseInt(a.nb_offres || 0); });
+        document.getElementById('nbOffresTotal').textContent = totalOffres;
+
+        // Rendu des cartes
+        document.getElementById('grille').innerHTML =
+          data.artworks.map(a => carteEnchere(a)).join('');
+
+        // Démarrage de tous les timers
+        data.artworks.forEach(a => {
+          if (a.date_fin_enchere) {
+            demarrerTimer(`timer-${a.id_artwork}`, new Date(a.date_fin_enchere));
+          }
+        });
+
+      } catch (err) {
+        document.getElementById('grille').innerHTML =
+          '<p style="color:red;grid-column:1/-1;">Erreur de chargement. Vérifiez que le serveur PHP est actif.</p>';
+      }
+    }
+
+    // ── Génération du HTML d'une carte enchère ────────────────
+    function carteEnchere(a) {
+      const prix = a.prix_actuel || a.prix_base;
+      return `
+        <div class="carte-enchere">
+          <div class="carte-enchere__img">🖼️</div>
+          <div class="carte-enchere__corps">
+            <div class="carte-enchere__artiste">${a.nom} ${a.prenom}</div>
+            <div class="carte-enchere__titre">${a.titre}</div>
+            <div class="carte-enchere__meta">${a.technique || ''} · ${a.dimensions || ''}</div>
+
+            <!-- Timer -->
+            <div class="carte-enchere__timer" id="timer-wrap-${a.id_artwork}">
+              <span>⏱ Fin dans</span>
+              <span class="carte-enchere__timer-compte" id="timer-${a.id_artwork}">--:--:--</span>
+            </div>
+
+            <!-- Prix -->
+            <div class="carte-enchere__prix-zone">
+              <div>
+                <div class="carte-enchere__prix-label">Enchère actuelle</div>
+                <div class="carte-enchere__prix">
+                  ${Number(prix).toLocaleString('fr-FR')} €
+                </div>
+              </div>
+              <div class="carte-enchere__nb-offres">
+                ${a.nb_offres || 0} offre(s)
+              </div>
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="carte-enchere__footer">
+            <button class="btn btn--bordeau"
+              style="flex:1;"
+              onclick="window.location.href='artwork.html?id=${a.id_artwork}'">
+              🔨 Enchérir
+            </button>
+            <button class="btn btn--outline"
+              onclick="window.location.href='artwork.html?id=${a.id_artwork}'">
+              Voir
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── Timer compte à rebours ────────────────────────────────
+    function demarrerTimer(idElement, dateFin) {
+      const pad = n => String(n).padStart(2, '0');
+
+      function tick() {
+        const el   = document.getElementById(idElement);
+        const wrap = document.getElementById(idElement.replace('timer-', 'timer-wrap-'));
+        if (!el) return;
+
+        const diff = dateFin - Date.now();
+
+        if (diff <= 0) {
+          el.textContent = 'Terminée';
+          return;
+        }
+
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+        // Passe en rouge si moins d'1 heure
+        if (diff < 3600000 && wrap) {
+          wrap.classList.add('carte-enchere__timer--urgent');
+        }
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    // ── Rafraîchissement automatique toutes les 30 secondes ───
+    chargerEncheres();
+    setInterval(chargerEncheres, 30000);
+  </script>
+
+</body>
+</html>

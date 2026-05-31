@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Négociation — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    .entete {
+      background: var(--bleu); padding: 40px 24px; color: white;
+    }
+    .entete__inner { max-width: 1280px; margin: 0 auto; }
+    .entete__titre { font-size: 36px; font-weight: 700; margin-bottom: 6px; }
+    .entete__sous-titre { color: rgba(255,255,255,0.75); font-size: 15px; }
+
+    /* Explication du processus */
+    .process {
+      background: var(--blanc); border-bottom: 1px solid #F0EDE6;
+      padding: 24px;
+    }
+    .process__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; gap: 0; justify-content: center;
+    }
+    .process__etape {
+      flex: 1; text-align: center; padding: 0 20px;
+      border-right: 1px solid #F0EDE6; max-width: 220px;
+    }
+    .process__etape:last-child { border-right: none; }
+    .process__icone { font-size: 28px; margin-bottom: 8px; }
+    .process__titre { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .process__desc { font-size: 12px; color: var(--gris); line-height: 1.5; }
+
+    /* Grille */
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Carte négociation */
+    .carte-nego {
+      background: var(--blanc); border-radius: 12px;
+      border: 2px solid var(--bleu);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden; transition: transform 0.2s;
+    }
+    .carte-nego:hover { transform: translateY(-4px); }
+    .carte-nego__img {
+      height: 180px; background: #E8EDF5;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 48px;
+    }
+    .carte-nego__corps { padding: 16px; }
+    .carte-nego__artiste { font-size: 11px; color: var(--gris); margin-bottom: 4px; }
+    .carte-nego__titre { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .carte-nego__meta { font-size: 12px; color: #9CA3AF; margin-bottom: 12px; }
+    .carte-nego__prix-zone {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 12px;
+    }
+    .carte-nego__prix-label { font-size: 11px; color: var(--gris); }
+    .carte-nego__prix { font-size: 24px; font-weight: 800; color: var(--bleu); }
+    .carte-nego__info {
+      background: #EEF2FF; border-radius: 6px;
+      padding: 8px 12px; font-size: 12px;
+      color: var(--bleu); margin-bottom: 12px;
+    }
+    .carte-nego__footer {
+      border-top: 1px solid #F3F0E8; padding: 12px 16px;
+      display: flex; gap: 8px;
+    }
+
+    /* Mes négociations en cours (si connecté) */
+    .mes-negociations {
+      background: #EEF2FF; border: 1px solid #C7D2FE;
+      border-radius: 12px; padding: 20px; margin-bottom: 32px;
+    }
+    .mes-negociations__titre {
+      font-size: 15px; font-weight: 700; margin-bottom: 14px;
+    }
+    .nego-ligne {
+      background: var(--blanc); border-radius: 8px;
+      padding: 14px; margin-bottom: 10px;
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 14px;
+    }
+    .nego-ligne__statut {
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .nego-ligne__statut--en_cours {
+      background: #FEF3C7; color: #92400E;
+    }
+    .nego-ligne__statut--accepte {
+      background: #D1FAE5; color: #065F46;
+    }
+    .nego-ligne__statut--refuse {
+      background: #FEE2E2; color: #991B1B;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html" class="actif">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="panier.html"><button class="navbar__btn navbar__btn--outline">🛒 Panier</button></a>
+      <span id="zoneProfil">
+        <a href="login.html"><button class="navbar__btn">Se connecter</button></a>
+      </span>
+    </div>
+  </nav>
+
+  <!-- EN-TÊTE -->
+  <div class="entete">
+    <div class="entete__inner">
+      <h1 class="entete__titre">💬 Ventes par Négociation</h1>
+      <p class="entete__sous-titre">
+        Négociez directement avec le vendeur · Maximum 5 échanges · Expiration après 48h
+      </p>
+    </div>
+  </div>
+
+  <!-- PROCESSUS -->
+  <div class="process">
+    <div class="process__inner">
+      <div class="process__etape">
+        <div class="process__icone">💬</div>
+        <div class="process__titre">1. Proposez</div>
+        <div class="process__desc">Faites votre offre au prix que vous souhaitez</div>
+      </div>
+      <div class="process__etape">
+        <div class="process__icone">🔄</div>
+        <div class="process__titre">2. Échangez</div>
+        <div class="process__desc">Le vendeur répond, vous contre-proposez (max 5 fois)</div>
+      </div>
+      <div class="process__etape">
+        <div class="process__icone">🤝</div>
+        <div class="process__titre">3. Concluez</div>
+        <div class="process__desc">Accord trouvé : la transaction est finalisée</div>
+      </div>
+      <div class="process__etape">
+        <div class="process__icone">⏰</div>
+        <div class="process__titre">4. Délai : 48h</div>
+        <div class="process__desc">Chaque réponse doit être envoyée dans les 48h</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+
+    <!-- Mes négociations en cours (si connecté) -->
+    <div id="zoneMessNegos" style="display:none;">
+      <div class="mes-negociations">
+        <div class="mes-negociations__titre">📋 Mes négociations en cours</div>
+        <div id="listeMessNegos">Chargement…</div>
+      </div>
+    </div>
+
+    <!-- Titre de la section -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:11px;color:var(--or);font-weight:700;letter-spacing:2px;margin-bottom:6px;">
+        ŒUVRES DISPONIBLES
+      </div>
+      <h2 style="font-size:28px;font-weight:700;">Ventes par négociation</h2>
+    </div>
+
+    <!-- Grille des œuvres négociables -->
+    <div class="grille" id="grille">
+      <p style="color:var(--gris);">Chargement…</p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Initialisation ────────────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+      document.getElementById('zoneProfil').innerHTML =
+        `<a href="profil.html"><button class="navbar__btn">${user.prenom}</button></a>`;
+      // Afficher les négociations en cours de l'utilisateur
+      document.getElementById('zoneMessNegos').style.display = 'block';
+      chargerMesNegociations();
+    }
+
+    // ── Chargement des œuvres négociables ─────────────────────
+    async function chargerOeuvres() {
+      try {
+        const r = await fetch(
+          'mercato_nova_backend/api/artworks/index.php?type=negociation&statut=active'
+        );
+        const data = await r.json();
+
+        if (!data.success || data.artworks.length === 0) {
+          document.getElementById('grille').innerHTML =
+            '<p style="color:var(--gris);">Aucune œuvre disponible à la négociation.</p>';
+          return;
+        }
+
+        document.getElementById('grille').innerHTML =
+          data.artworks.map(a => carteNego(a)).join('');
+
+      } catch (err) {
+        document.getElementById('grille').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Génération d'une carte ────────────────────────────────
+    function carteNego(a) {
+      return `
+        <div class="carte-nego">
+          <div class="carte-nego__img">🖼️</div>
+          <div class="carte-nego__corps">
+            <div class="carte-nego__artiste">${a.nom} ${a.prenom}</div>
+            <div class="carte-nego__titre">${a.titre}</div>
+            <div class="carte-nego__meta">${a.technique || ''} · ${a.dimensions || ''}</div>
+            <div class="carte-nego__prix-zone">
+              <div>
+                <div class="carte-nego__prix-label">Prix vendeur</div>
+                <div class="carte-nego__prix">
+                  ${Number(a.prix_base).toLocaleString('fr-FR')} €
+                </div>
+              </div>
+            </div>
+            <div class="carte-nego__info">
+              💬 Négociation ouverte · Max 5 échanges · Réponse sous 48h
+            </div>
+          </div>
+          <div class="carte-nego__footer">
+            <button class="btn btn--bleu" style="flex:1;"
+              onclick="window.location.href='artwork.html?id=${a.id_artwork}'">
+              💬 Négocier
+            </button>
+            <button class="btn btn--outline"
+              onclick="window.location.href='artwork.html?id=${a.id_artwork}'">
+              Voir
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── Mes négociations en cours ─────────────────────────────
+    async function chargerMesNegociations() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/negotiations/mes_negociations.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeMessNegos');
+
+        if (!data.success || data.negotiations.length === 0) {
+          zone.innerHTML = '<p style="font-size:13px;color:var(--gris);">Aucune négociation en cours.</p>';
+          return;
+        }
+
+        zone.innerHTML = data.negotiations.map(n => `
+          <div class="nego-ligne">
+            <div>
+              <strong>${n.titre}</strong>
+              <span style="color:var(--gris);font-size:12px;margin-left:8px;">
+                ${n.nb_echanges}/5 échanges
+              </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span>${Number(n.montant_propose).toLocaleString('fr-FR')} €</span>
+              <span class="nego-ligne__statut nego-ligne__statut--${n.statut}">
+                ${n.statut === 'en_cours' ? 'En cours' : n.statut === 'accepte' ? 'Accepté' : 'Refusé'}
+              </span>
+              <a href="artwork.html?id=${n.id_artwork}" class="btn btn--outline" style="padding:5px 12px;font-size:12px;">
+                Voir
+              </a>
+            </div>
+          </div>
+        `).join('');
+
+      } catch(e) {
+        document.getElementById('listeMessNegos').innerHTML =
+          '<p style="font-size:13px;color:var(--gris);">Impossible de charger vos négociations.</p>';
+      }
+    }
+
+    // ── Lancement ─────────────────────────────────────────────
+    chargerOeuvres();
+  </script>
+
+</body>
+</html>

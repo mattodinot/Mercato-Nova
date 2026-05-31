@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* En-tête admin */
+    .admin-header {
+      background: var(--noir); color: white; padding: 30px 24px;
+      border-bottom: 3px solid var(--or);
+    }
+    .admin-header__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .admin-header__titre { font-size: 24px; font-weight: 700; }
+    .admin-header__badge {
+      background: var(--or); color: var(--noir);
+      padding: 3px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+    }
+
+    /* Stats en haut */
+    .stats {
+      background: var(--blanc); border-bottom: 1px solid #F0EDE6;
+      padding: 20px 24px;
+    }
+    .stats__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .stat-carte {
+      background: var(--fond); border-radius: 10px;
+      padding: 16px; text-align: center;
+      border: 1px solid #F0EDE6;
+    }
+    .stat-carte__num {
+      font-size: 28px; font-weight: 800;
+      color: var(--noir); margin-bottom: 4px;
+    }
+    .stat-carte__label { font-size: 13px; color: var(--gris); }
+
+    /* Onglets */
+    .onglets {
+      background: var(--blanc); border-bottom: 1px solid #F0EDE6;
+      padding: 0 24px;
+    }
+    .onglets__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; gap: 0;
+    }
+    .onglet {
+      padding: 16px 20px; font-size: 14px; font-weight: 500;
+      color: var(--gris); background: transparent; border: none;
+      border-bottom: 3px solid transparent; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .onglet.actif { color: var(--noir); border-bottom-color: var(--or); }
+
+    /* Contenu */
+    .tab-contenu { display: none; }
+    .tab-contenu.actif { display: block; }
+
+    /* Ligne d'annonce à modérer */
+    .moderation-ligne {
+      background: var(--blanc); border-radius: 10px;
+      border: 1px solid #F0EDE6; padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex; gap: 16px; align-items: center;
+    }
+    .moderation-ligne__img {
+      width: 70px; height: 60px; border-radius: 8px;
+      background: #F0EDE6; flex-shrink: 0;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 24px;
+    }
+    .moderation-ligne__info { flex: 1; }
+    .moderation-ligne__titre { font-weight: 700; margin-bottom: 4px; }
+    .moderation-ligne__meta { font-size: 13px; color: var(--gris); }
+    .moderation-ligne__actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* Ligne utilisateur */
+    .user-ligne {
+      background: var(--blanc); border-radius: 10px;
+      border: 1px solid #F0EDE6; padding: 14px 20px;
+      margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .user-ligne__nom { font-weight: 600; margin-bottom: 2px; }
+    .user-ligne__email { font-size: 13px; color: var(--gris); }
+    .role-badge {
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .role-badge--admin   { background: #1A1A2E; color: var(--or); }
+    .role-badge--vendeur { background: #F5E8EC; color: var(--bordeau); }
+    .role-badge--acheteur{ background: #E8EDF5; color: var(--bleu); }
+    .role-badge--galerie { background: #E8F5EF; color: var(--vert); }
+
+    /* Alerte accès refusé */
+    .acces-refuse {
+      text-align: center; padding: 80px 24px;
+    }
+    .acces-refuse__icone { font-size: 56px; margin-bottom: 16px; }
+    .acces-refuse__titre { font-size: 22px; font-weight: 700; color: var(--rouge); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+    </div>
+    <div class="navbar__right">
+      <a href="profil.html"><button class="navbar__btn navbar__btn--outline">Mon profil</button></a>
+      <button class="navbar__btn" onclick="deconnecter()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <!-- Vérification du rôle admin côté JS -->
+  <div id="pageAdmin" style="display:none;">
+
+    <!-- EN-TÊTE -->
+    <div class="admin-header">
+      <div class="admin-header__inner">
+        <div class="admin-header__titre">⚙️ Administration</div>
+        <span class="admin-header__badge">ADMIN</span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stats__inner">
+        <div class="stat-carte">
+          <div class="stat-carte__num" id="statUsers">—</div>
+          <div class="stat-carte__label">Utilisateurs</div>
+        </div>
+        <div class="stat-carte">
+          <div class="stat-carte__num" id="statArtworks">—</div>
+          <div class="stat-carte__label">Œuvres actives</div>
+        </div>
+        <div class="stat-carte">
+          <div class="stat-carte__num" id="statEnAttente">—</div>
+          <div class="stat-carte__label">En attente de validation</div>
+        </div>
+        <div class="stat-carte">
+          <div class="stat-carte__num" id="statOrders">—</div>
+          <div class="stat-carte__label">Commandes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONGLETS -->
+    <div class="onglets">
+      <div class="onglets__inner">
+        <button class="onglet actif" onclick="changerOnglet('moderation', this)">
+          📋 Modération annonces
+        </button>
+        <button class="onglet" onclick="changerOnglet('utilisateurs', this)">
+          👥 Utilisateurs
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENU -->
+    <div class="page-wrapper">
+
+      <!-- Modération -->
+      <div class="tab-contenu actif" id="tab-moderation">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 style="font-size:20px;font-weight:700;">Annonces en attente de validation</h2>
+          <button class="btn btn--outline" onclick="chargerModeration()">🔄 Actualiser</button>
+        </div>
+        <div id="listeModeration"><p style="color:var(--gris);">Chargement…</p></div>
+      </div>
+
+      <!-- Utilisateurs -->
+      <div class="tab-contenu" id="tab-utilisateurs">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 style="font-size:20px;font-weight:700;">Tous les utilisateurs</h2>
+          <button class="btn btn--outline" onclick="chargerUtilisateurs()">🔄 Actualiser</button>
+        </div>
+        <div id="listeUtilisateurs"><p style="color:var(--gris);">Chargement…</p></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Page d'accès refusé (non admin) -->
+  <div id="pageRefus" style="display:none;">
+    <div class="acces-refuse">
+      <div class="acces-refuse__icone">🚫</div>
+      <div class="acces-refuse__titre">Accès refusé</div>
+      <p style="color:var(--gris);margin:10px 0 24px;">
+        Cette page est réservée aux administrateurs.
+      </p>
+      <a href="index.html" class="btn btn--noir">Retour à l'accueil</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Vérification du rôle admin ────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    if (!user || user.role !== 'admin') {
+      document.getElementById('pageRefus').style.display = 'block';
+    } else {
+      document.getElementById('pageAdmin').style.display = 'block';
+      chargerStats();
+      chargerModeration();
+    }
+
+    // ── Gestion des onglets ───────────────────────────────────
+    function changerOnglet(nom, btn) {
+      document.querySelectorAll('.tab-contenu').forEach(el => el.classList.remove('actif'));
+      document.querySelectorAll('.onglet').forEach(el => el.classList.remove('actif'));
+      document.getElementById(`tab-${nom}`).classList.add('actif');
+      btn.classList.add('actif');
+      if (nom === 'moderation')   chargerModeration();
+      if (nom === 'utilisateurs') chargerUtilisateurs();
+    }
+
+    // ── Stats globales ────────────────────────────────────────
+    async function chargerStats() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/admin/stats.php');
+        const data = await r.json();
+        if (data.success) {
+          document.getElementById('statUsers').textContent    = data.stats.users;
+          document.getElementById('statArtworks').textContent = data.stats.artworks_actives;
+          document.getElementById('statEnAttente').textContent= data.stats.en_attente;
+          document.getElementById('statOrders').textContent   = data.stats.orders;
+        }
+      } catch(e) {}
+    }
+
+    // ── Modération des annonces ───────────────────────────────
+    async function chargerModeration() {
+      try {
+        const r = await fetch(
+          'mercato_nova_backend/api/admin/artworks.php?statut=en_attente'
+        );
+        const data = await r.json();
+        const zone = document.getElementById('listeModeration');
+
+        if (!data.success || data.artworks.length === 0) {
+          zone.innerHTML = `
+            <div style="text-align:center;padding:40px;color:var(--vert);">
+              ✅ Aucune annonce en attente de validation.
+            </div>
+          `;
+          return;
+        }
+
+        zone.innerHTML = data.artworks.map(a => `
+          <div class="moderation-ligne">
+            <div class="moderation-ligne__img">🖼️</div>
+            <div class="moderation-ligne__info">
+              <div class="moderation-ligne__titre">${a.titre}</div>
+              <div class="moderation-ligne__meta">
+                Vendeur : ${a.nom} ${a.prenom} ·
+                Type : ${a.type_vente} ·
+                Prix : ${Number(a.prix_base).toLocaleString('fr-FR')} € ·
+                Déposée le ${new Date(a.date_creation).toLocaleDateString('fr-FR')}
+              </div>
+            </div>
+            <div class="moderation-ligne__actions">
+              <a href="artwork.html?id=${a.id_artwork}" class="btn btn--outline" style="padding:7px 14px;font-size:13px;">
+                👁 Voir
+              </a>
+              <button class="btn btn--vert" style="padding:7px 14px;font-size:13px;"
+                onclick="validerAnnonce(${a.id_artwork})">
+                ✓ Valider
+              </button>
+              <button class="btn btn--bordeau" style="padding:7px 14px;font-size:13px;"
+                onclick="rejeterAnnonce(${a.id_artwork})">
+                ✗ Rejeter
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+      } catch(e) {
+        document.getElementById('listeModeration').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Valider une annonce ───────────────────────────────────
+    async function validerAnnonce(id) {
+      if (!confirm('Valider cette annonce ?')) return;
+      try {
+        const r = await fetch('mercato_nova_backend/api/admin/artworks.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_artwork: id, action: 'valider' })
+        });
+        const data = await r.json();
+        if (data.success) {
+          alert('✅ Annonce validée et publiée !');
+          chargerModeration();
+          chargerStats();
+        } else {
+          alert('Erreur : ' + (data.error || 'inconnue'));
+        }
+      } catch(e) {
+        alert('Erreur de connexion.');
+      }
+    }
+
+    // ── Rejeter une annonce ───────────────────────────────────
+    async function rejeterAnnonce(id) {
+      if (!confirm('Rejeter cette annonce ?')) return;
+      try {
+        const r = await fetch('mercato_nova_backend/api/admin/artworks.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_artwork: id, action: 'rejeter' })
+        });
+        const data = await r.json();
+        if (data.success) {
+          alert('Annonce rejetée.');
+          chargerModeration();
+        } else {
+          alert('Erreur : ' + (data.error || 'inconnue'));
+        }
+      } catch(e) {
+        alert('Erreur de connexion.');
+      }
+    }
+
+    // ── Liste des utilisateurs ────────────────────────────────
+    async function chargerUtilisateurs() {
+      try {
+        const r = await fetch('mercato_nova_backend/api/admin/users.php');
+        const data = await r.json();
+        const zone = document.getElementById('listeUtilisateurs');
+
+        if (!data.success) {
+          zone.innerHTML = '<p style="color:red;">Erreur de chargement.</p>';
+          return;
+        }
+
+        zone.innerHTML = data.users.map(u => `
+          <div class="user-ligne">
+            <div>
+              <div class="user-ligne__nom">${u.prenom} ${u.nom}</div>
+              <div class="user-ligne__email">${u.email} · Inscrit le ${new Date(u.date_inscription).toLocaleDateString('fr-FR')}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="role-badge role-badge--${u.role}">
+                ${u.role}
+              </span>
+              ${u.role !== 'admin' ? `
+                <button class="btn btn--bordeau" style="padding:5px 12px;font-size:12px;"
+                  onclick="suspendreUser(${u.id_user}, '${u.nom}')">
+                  Suspendre
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `).join('');
+
+      } catch(e) {
+        document.getElementById('listeUtilisateurs').innerHTML =
+          '<p style="color:red;">Erreur de chargement.</p>';
+      }
+    }
+
+    // ── Suspendre un utilisateur ──────────────────────────────
+    async function suspendreUser(id, nom) {
+      if (!confirm(`Suspendre le compte de ${nom} ?`)) return;
+      try {
+        const r = await fetch('mercato_nova_backend/api/admin/users.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_user: id, action: 'suspendre' })
+        });
+        const data = await r.json();
+        if (data.success) {
+          alert('Compte suspendu.');
+          chargerUtilisateurs();
+        } else {
+          alert('Erreur : ' + (data.error || 'inconnue'));
+        }
+      } catch(e) {
+        alert('Erreur de connexion.');
+      }
+    }
+
+    // ── Déconnexion ───────────────────────────────────────────
+    function deconnecter() {
+      localStorage.removeItem('user');
+      localStorage.removeItem('panier');
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>

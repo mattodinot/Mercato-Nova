@@ -1,0 +1,133 @@
+/* =============================================
+   MERCATO NOVA — CSS commun à toutes les pages
+   Importé dans chaque page avec <link>
+============================================= */
+
+/* Variables de couleurs */
+:root {
+  --noir:    #1A1A2E;
+  --or:      #C9A84C;
+  --fond:    #F8F5EE;
+  --blanc:   #FFFFFF;
+  --gris:    #6B7280;
+  --bordeau: #7B2D42;
+  --vert:    #2D7B5A;
+  --bleu:    #2D4A7B;
+  --rouge:   #DC2626;
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', Arial, sans-serif; background: var(--fond); color: var(--noir); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: inherit; }
+
+/* Navbar */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--noir);
+  display: flex; align-items: center;
+  padding: 0 32px; height: 64px; gap: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.navbar__logo { font-size: 18px; font-weight: 700; color: var(--or); }
+.navbar__links { display: flex; gap: 4px; flex: 1; }
+.navbar__links a {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 14px; color: #D1D5DB;
+  transition: all 0.2s;
+}
+.navbar__links a:hover, .navbar__links a.actif {
+  color: var(--or); background: rgba(201,168,76,0.12);
+}
+.navbar__right { display: flex; gap: 10px; align-items: center; margin-left: auto; }
+.navbar__btn {
+  background: var(--or); color: var(--noir);
+  border: none; border-radius: 8px;
+  padding: 8px 18px; font-size: 13px; font-weight: 700;
+}
+.navbar__btn:hover { background: #E8C96A; }
+.navbar__btn--outline {
+  background: transparent; color: var(--or);
+  border: 1.5px solid var(--or);
+}
+
+/* Footer */
+.footer {
+  background: var(--noir); color: #9CA3AF;
+  text-align: center; padding: 32px 24px;
+  font-size: 13px; margin-top: 80px;
+}
+
+/* Boutons génériques */
+.btn {
+  display: inline-block; border: none; border-radius: 9px;
+  padding: 11px 24px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+.btn--noir    { background: var(--noir); color: var(--or); }
+.btn--or      { background: var(--or); color: var(--noir); }
+.btn--bordeau { background: var(--bordeau); color: #fff; }
+.btn--bleu    { background: var(--bleu); color: #fff; }
+.btn--vert    { background: var(--vert); color: #fff; }
+.btn--outline {
+  background: transparent; color: var(--noir);
+  border: 1.5px solid #D1D5DB;
+}
+.btn--outline:hover { border-color: var(--noir); }
+.btn--full { width: 100%; }
+
+/* Carte générique */
+.carte {
+  background: var(--blanc); border-radius: 12px;
+  border: 1px solid #F0EDE6;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+/* Formulaire */
+.champ { margin-bottom: 18px; }
+.champ label {
+  display: block; font-size: 13px;
+  font-weight: 600; color: var(--noir); margin-bottom: 6px;
+}
+.champ input, .champ select, .champ textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid #E5E7EB; border-radius: 8px;
+  font-size: 14px; font-family: inherit;
+  color: var(--noir); background: var(--blanc);
+  transition: border-color 0.2s;
+}
+.champ input:focus, .champ select:focus, .champ textarea:focus {
+  outline: none; border-color: var(--noir);
+}
+.champ textarea { resize: vertical; min-height: 100px; }
+
+/* Messages */
+.msg-erreur {
+  background: #FEE2E2; border: 1px solid #FECACA;
+  color: var(--rouge); border-radius: 8px;
+  padding: 12px 16px; font-size: 14px; margin-bottom: 18px;
+  display: none;
+}
+.msg-succes {
+  background: #D1FAE5; border: 1px solid #A7F3D0;
+  color: var(--vert); border-radius: 8px;
+  padding: 12px 16px; font-size: 14px; margin-bottom: 18px;
+  display: none;
+}
+
+/* Badge de type de vente */
+.badge {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 20px; font-size: 11px; font-weight: 700;
+  border: 1px solid currentColor;
+}
+.badge--immediat { color: var(--vert); background: #E8F5EF; }
+.badge--enchere  { color: var(--bordeau); background: #F5E8EC; }
+.badge--nego     { color: var(--bleu); background: #E8EDF5; }
+
+/* Centrage */
+.page-wrapper { max-width: 1280px; margin: 0 auto; padding: 40px 24px; }
+.centre { max-width: 480px; margin: 60px auto; padding: 0 24px; }

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panier — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* Layout deux colonnes */
+    .panier-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* Article dans le panier */
+    .article {
+      background: var(--blanc); border-radius: 12px;
+      border: 1px solid #F0EDE6; padding: 20px;
+      margin-bottom: 16px;
+      display: flex; gap: 16px; align-items: center;
+    }
+    .article__img {
+      width: 90px; height: 80px; border-radius: 8px;
+      background: #F0EDE6; flex-shrink: 0;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 28px;
+    }
+    .article__info { flex: 1; }
+    .article__titre { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .article__artiste { font-size: 13px; color: var(--gris); margin-bottom: 4px; }
+    .article__meta { font-size: 12px; color: #9CA3AF; }
+    .article__prix {
+      font-size: 20px; font-weight: 800;
+      color: var(--noir); flex-shrink: 0;
+    }
+    .article__suppr {
+      background: transparent; border: none;
+      color: #9CA3AF; font-size: 20px; cursor: pointer;
+      padding: 4px; transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .article__suppr:hover { color: var(--rouge); }
+
+    /* Récapitulatif */
+    .recap {
+      background: var(--blanc); border-radius: 12px;
+      border: 1px solid #F0EDE6; padding: 24px;
+      position: sticky; top: 84px;
+    }
+    .recap__titre { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+    .recap__ligne {
+      display: flex; justify-content: space-between;
+      font-size: 14px; padding: 8px 0;
+      border-bottom: 1px solid #F8F5EE;
+    }
+    .recap__ligne:last-of-type { border-bottom: none; }
+    .recap__total {
+      display: flex; justify-content: space-between;
+      font-size: 18px; font-weight: 800;
+      padding: 16px 0 20px;
+    }
+
+    /* Simulateur de paiement */
+    .paiement-sim {
+      background: #F8F5EE; border-radius: 10px;
+      padding: 16px; margin-top: 16px;
+    }
+    .paiement-sim__titre {
+      font-size: 13px; font-weight: 700; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* Panier vide */
+    .panier-vide {
+      text-align: center; padding: 80px 24px;
+      grid-column: 1 / -1;
+    }
+    .panier-vide__icone { font-size: 64px; margin-bottom: 16px; }
+    .panier-vide__titre {
+      font-size: 22px; font-weight: 700; margin-bottom: 8px;
+    }
+    .panier-vide__texte {
+      color: var(--gris); margin-bottom: 24px; font-size: 15px;
+    }
+
+    /* Confirmation de commande */
+    .confirmation {
+      text-align: center; padding: 60px 24px;
+      max-width: 500px; margin: 0 auto;
+    }
+    .confirmation__icone { font-size: 64px; margin-bottom: 16px; }
+    .confirmation__titre {
+      font-size: 24px; font-weight: 700;
+      color: var(--vert); margin-bottom: 10px;
+    }
+    .confirmation__texte { color: var(--gris); font-size: 15px; }
+
+    @media (max-width: 768px) {
+      .panier-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="panier.html"><button class="navbar__btn actif">🛒 Panier</button></a>
+      <span id="zoneProfil">
+        <a href="login.html"><button class="navbar__btn navbar__btn--outline">Se connecter</button></a>
+      </span>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <h1 style="font-size:28px;font-weight:700;margin-bottom:32px;">Mon Panier</h1>
+    <div class="panier-layout" id="contenu">
+      <p style="color:var(--gris);">Chargement…</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    // ── Données ───────────────────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    if (user) {
+      document.getElementById('zoneProfil').innerHTML =
+        `<a href="profil.html"><button class="navbar__btn">${user.prenom}</button></a>`;
+    }
+
+    function getPanier() {
+      return JSON.parse(localStorage.getItem('panier') || '[]');
+    }
+    function savePanier(p) {
+      localStorage.setItem('panier', JSON.stringify(p));
+    }
+
+    // ── Rendu du panier ───────────────────────────────────────
+    function afficherPanier() {
+      const panier  = getPanier();
+      const contenu = document.getElementById('contenu');
+
+      // Panier vide
+      if (panier.length === 0) {
+        contenu.innerHTML = `
+          <div class="panier-vide">
+            <div class="panier-vide__icone">🛒</div>
+            <div class="panier-vide__titre">Votre panier est vide</div>
+            <p class="panier-vide__texte">
+              Explorez notre catalogue pour trouver l'œuvre qui vous correspond.
+            </p>
+            <a href="catalogue.html" class="btn btn--noir">
+              Découvrir le catalogue
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      // Calcul du total
+      const total = panier.reduce((sum, item) => {
+        return sum + Number(item.prix_base || 0);
+      }, 0);
+
+      // Liste des articles
+      const htmlArticles = panier.map((item, index) => `
+        <div class="article">
+          <div class="article__img">🖼️</div>
+          <div class="article__info">
+            <div class="article__titre">${item.titre}</div>
+            <div class="article__artiste">par ${item.nom || ''} ${item.prenom || ''}</div>
+            <div class="article__meta">${item.technique || ''} · ${item.dimensions || ''}</div>
+          </div>
+          <div class="article__prix">
+            ${Number(item.prix_base).toLocaleString('fr-FR')} €
+          </div>
+          <button class="article__suppr" onclick="supprimerArticle(${index})" title="Retirer du panier">
+            ×
+          </button>
+        </div>
+      `).join('');
+
+      // Récapitulatif + formulaire de paiement simulé
+      const htmlRecap = `
+        <div class="recap">
+          <div class="recap__titre">Récapitulatif</div>
+
+          ${panier.map(item => `
+            <div class="recap__ligne">
+              <span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                ${item.titre}
+              </span>
+              <span>${Number(item.prix_base).toLocaleString('fr-FR')} €</span>
+            </div>
+          `).join('')}
+
+          <div class="recap__total">
+            <span>Total</span>
+            <span>${total.toLocaleString('fr-FR')} €</span>
+          </div>
+
+          <!-- Paiement simulé -->
+          <div class="paiement-sim">
+            <div class="paiement-sim__titre">🔒 Paiement simulé</div>
+
+            <div class="champ" style="margin-bottom:10px;">
+              <label for="nomCarte">Nom sur la carte</label>
+              <input type="text" id="nomCarte" placeholder="Marie Durand" />
+            </div>
+            <div class="champ" style="margin-bottom:10px;">
+              <label for="numeroCarte">Numéro de carte</label>
+              <input type="text" id="numeroCarte" placeholder="1234 5678 9012 3456" maxlength="19" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+              <div class="champ" style="margin-bottom:0;">
+                <label>Expiration</label>
+                <input type="text" placeholder="MM/AA" maxlength="5" />
+              </div>
+              <div class="champ" style="margin-bottom:0;">
+                <label>CVV</label>
+                <input type="text" placeholder="123" maxlength="3" />
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn--or btn--full" style="margin-top:16px;" onclick="validerCommande()">
+            ✓ Valider la commande (${total.toLocaleString('fr-FR')} €)
+          </button>
+
+          <a href="catalogue.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--gris);">
+            ← Continuer mes achats
+          </a>
+        </div>
+      `;
+
+      contenu.innerHTML = `
+        <div>
+          <p style="color:var(--gris);font-size:14px;margin-bottom:20px;">
+            ${panier.length} article(s) dans votre panier
+          </p>
+          ${htmlArticles}
+        </div>
+        ${htmlRecap}
+      `;
+    }
+
+    // ── Suppression d'un article ──────────────────────────────
+    function supprimerArticle(index) {
+      const panier = getPanier();
+      panier.splice(index, 1);
+      savePanier(panier);
+      afficherPanier();
+    }
+
+    // ── Validation de la commande ─────────────────────────────
+    async function validerCommande() {
+      if (!user) {
+        if (confirm('Vous devez être connecté pour valider votre commande. Se connecter ?')) {
+          window.location.href = 'login.html';
+        }
+        return;
+      }
+
+      const panier = getPanier();
+      if (panier.length === 0) return;
+
+      // Vérification basique du formulaire
+      const nom    = document.getElementById('nomCarte')?.value.trim();
+      const numero = document.getElementById('numeroCarte')?.value.trim();
+      if (!nom || !numero) {
+        alert('Veuillez remplir les informations de paiement.');
+        return;
+      }
+
+      try {
+        // Envoi de chaque article au backend
+        for (const item of panier) {
+          await fetch('mercato_nova_backend/api/orders/create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id_artwork:    item.id_artwork,
+              montant_final: item.prix_base,
+              mode_achat:    'immediat'
+            })
+          });
+        }
+
+        // Vidage du panier
+        savePanier([]);
+
+        // Affichage de la confirmation
+        document.getElementById('contenu').innerHTML = `
+          <div class="confirmation">
+            <div class="confirmation__icone">✅</div>
+            <div class="confirmation__titre">Commande confirmée !</div>
+            <p class="confirmation__texte">
+              Votre commande a été enregistrée avec succès.
+              Vous recevrez une notification de confirmation.
+            </p>
+            <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;">
+              <a href="catalogue.html" class="btn btn--or">Continuer mes achats</a>
+              <a href="profil.html"    class="btn btn--outline">Voir mes commandes</a>
+            </div>
+          </div>
+        `;
+
+      } catch(err) {
+        alert('Erreur lors de la validation. Veuillez réessayer.');
+      }
+    }
+
+    // ── Lancement ─────────────────────────────────────────────
+    afficherPanier();
+  </script>
+
+</body>
+</html>

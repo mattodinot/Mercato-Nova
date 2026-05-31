@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion — Mercato Nova</title>
+  <link rel="stylesheet" href="style_commun.css" />
+  <style>
+    /* ── Styles spécifiques à cette page ── */
+    .login-box {
+      background: var(--blanc);
+      border-radius: 16px;
+      border: 1px solid #F0EDE6;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 40px;
+    }
+    .login-box__logo {
+      text-align: center;
+      font-size: 22px; font-weight: 700;
+      color: var(--or); margin-bottom: 8px;
+    }
+    .login-box__titre {
+      text-align: center; font-size: 22px;
+      font-weight: 700; margin-bottom: 6px;
+    }
+    .login-box__sous-titre {
+      text-align: center; color: var(--gris);
+      font-size: 14px; margin-bottom: 28px;
+    }
+    .login-box__lien {
+      text-align: center; margin-top: 20px;
+      font-size: 14px; color: var(--gris);
+    }
+    .login-box__lien a { color: var(--noir); font-weight: 600; }
+    .login-box__lien a:hover { text-decoration: underline; }
+    .separateur {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--gris); font-size: 13px;
+    }
+    .separateur::before, .separateur::after {
+      content: ''; flex: 1; height: 1px; background: #E5E7EB;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">🎨 MERCATO NOVA</a>
+    <div class="navbar__links">
+      <a href="index.html">Accueil</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="encheres.html">Enchères</a>
+      <a href="negociation.html">Négociation</a>
+    </div>
+    <div class="navbar__right">
+      <a href="register.html"><button class="navbar__btn navbar__btn--outline">S'inscrire</button></a>
+      <a href="login.html"><button class="navbar__btn actif">Se connecter</button></a>
+    </div>
+  </nav>
+
+  <!-- FORMULAIRE DE CONNEXION -->
+  <div class="centre">
+    <div class="login-box">
+
+      <div class="login-box__logo">🎨 MERCATO NOVA</div>
+      <h1 class="login-box__titre">Connexion</h1>
+      <p class="login-box__sous-titre">Accédez à votre espace personnel</p>
+
+      <!-- Message d'erreur (affiché par JavaScript si besoin) -->
+      <div class="msg-erreur" id="msgErreur"></div>
+      <div class="msg-succes" id="msgSucces"></div>
+
+      <!-- Formulaire -->
+      <form id="formLogin">
+
+        <div class="champ">
+          <label for="email">Adresse e-mail</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="votre@email.fr"
+            required
+          />
+        </div>
+
+        <div class="champ">
+          <label for="password">Mot de passe</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Votre mot de passe"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn--noir btn--full" id="btnConnexion">
+          Se connecter
+        </button>
+
+      </form>
+
+      <div class="separateur">ou</div>
+
+      <div class="login-box__lien">
+        Pas encore de compte ?
+        <a href="register.html">Créer un compte</a>
+      </div>
+
+      <!-- Comptes de test pour faciliter les tests -->
+      <div style="margin-top:24px; padding:14px; background:#F8F5EE; border-radius:8px; font-size:12px; color:var(--gris);">
+        <strong style="color:var(--noir);">Comptes de test (mot de passe : password123)</strong><br>
+        Admin : admin@mercatonova.fr<br>
+        Vendeur : marie.durand@email.fr<br>
+        Acheteur : sophie.martin@email.fr
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Mercato Nova — Projet Web Dynamique ECE Paris ING2
+  </footer>
+
+  <script>
+    const form       = document.getElementById('formLogin');
+    const msgErreur  = document.getElementById('msgErreur');
+    const msgSucces  = document.getElementById('msgSucces');
+    const btnConnexion = document.getElementById('btnConnexion');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Réinitialisation des messages
+      msgErreur.style.display = 'none';
+      msgSucces.style.display = 'none';
+
+      // Désactivation du bouton pendant la requête
+      btnConnexion.disabled = true;
+      btnConnexion.textContent = 'Connexion en cours…';
+
+      // Récupération des valeurs du formulaire
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        // Envoi de la requête au backend PHP
+        const reponse = await fetch('mercato_nova_backend/api/auth/login.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await reponse.json();
+
+        if (data.success) {
+          // Connexion réussie : on stocke les infos utilisateur
+          localStorage.setItem('user', JSON.stringify(data.user));
+
+          msgSucces.textContent = 'Connexion réussie ! Redirection…';
+          msgSucces.style.display = 'block';
+
+          // Redirection selon le rôle
+          setTimeout(() => {
+            if (data.user.role === 'admin') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'index.html';
+            }
+          }, 1000);
+
+        } else {
+          // Affichage du message d'erreur renvoyé par le serveur
+          msgErreur.textContent = data.error || 'Email ou mot de passe incorrect.';
+          msgErreur.style.display = 'block';
+        }
+
+      } catch (erreur) {
+        msgErreur.textContent = 'Impossible de contacter le serveur. Vérifiez votre connexion.';
+        msgErreur.style.display = 'block';
+      }
+
+      // Réactivation du bouton
+      btnConnexion.disabled = false;
+      btnConnexion.textContent = 'Se connecter';
+    });
+  </script>
+
+</body>
+</html>
