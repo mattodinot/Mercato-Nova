@@ -206,51 +206,51 @@ INSERT INTO user (email, password_hash, nom, prenom, role, bio) VALUES
 
 -- Admin
 ('admin@mercatonova.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Nova', 'Admin',
  'admin',
  'Administrateur de la plateforme Mercato Nova.'),
 
 -- Vendeurs / Artistes
 ('marie.durand@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Durand', 'Marie',
  'vendeur',
- 'Peintre plasticienne spécialisée dans l'abstrait. Basée à Lyon, expose régulièrement dans des galeries parisiennes.'),
+ 'Peintre plasticienne spécialisée dans l\'abstrait. Basée à Lyon, expose régulièrement dans des galeries parisiennes.'),
 
 ('thomas.renard@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Renard', 'Thomas',
  'vendeur',
  'Sculpteur travaillant le bronze et le marbre. Atelier à Bordeaux.'),
 
 ('kana.leblanc@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Leblanc', 'Kana',
  'vendeur',
  'Photographe documentaire et plasticienne. Séries urbaines et paysagères.'),
 
 -- Acheteurs
 ('sophie.martin@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Martin', 'Sophie',
  'acheteur',
  NULL),
 
 ('lucas.bernard@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Bernard', 'Lucas',
  'acheteur',
  NULL),
 
 ('jean.dupont@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Dupont', 'Jean',
  'acheteur',
  NULL),
 
 ('amira.khalil@email.fr',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$lsXKo24T1oEdk2QTEFkbaeM7zNA18NaaM06Rc3jFHBWhanL0eM.w6',
  'Khalil', 'Amira',
  'acheteur',
  NULL);
@@ -268,7 +268,7 @@ VALUES
 -- Achat immédiat (Marie Durand = id 2)
 (2,
  'Composition en Or et Nuit',
- 'Une exploration des contrastes entre la lumière dorée et l'obscurité veloutée. L'artiste joue avec les épaisseurs de matière pour créer une œuvre tactile et lumineuse.',
+ 'Une exploration des contrastes entre la lumière dorée et l\'obscurité veloutée. L\'artiste joue avec les épaisseurs de matière pour créer une œuvre tactile et lumineuse.',
  'Huile sur toile', '100 × 80 cm', 2023, 'neuf',
  1200.00, 'immediat', 'active',
  NULL, NULL, NULL, 'Livraison gratuite', 234),
@@ -289,8 +289,8 @@ VALUES
 
 -- Enchères (Thomas Renard = id 3)
 (3,
- 'L'Éveil de la Forme',
- 'Sculpture en bronze à la cire perdue, numérotée 3/8. Représente le mouvement d'un corps en train de se libérer de ses contraintes. Socle en chêne massif inclus.',
+ 'L\'Éveil de la Forme',
+ 'Sculpture en bronze à la cire perdue, numérotée 3/8. Représente le mouvement d\'un corps en train de se libérer de ses contraintes. Socle en chêne massif inclus.',
  'Bronze', '45 × 30 × 25 cm', 2022, 'neuf',
  2500.00, 'enchere', 'active',
  50.00, 48,
@@ -308,7 +308,7 @@ VALUES
 
 (3,
  'Mémoire Bleue',
- 'Grande toile acrylique aux textures généreuses, évoquant la profondeur de l'océan. Œuvre unique accompagnée d'un certificat d'authenticité signé.',
+ 'Grande toile acrylique aux textures généreuses, évoquant la profondeur de l\'océan. Œuvre unique accompagnée d\'un certificat d\'authenticité signé.',
  'Acrylique', '120 × 90 cm', 2021, 'bon',
  1500.00, 'enchere', 'active',
  50.00, 24,
@@ -331,8 +331,8 @@ VALUES
  NULL, NULL, NULL, 'Expédition rapide', 168),
 
 (4,
- 'Portrait de l'Absence',
- 'Dessin à l'encre de Chine sur papier Canson 200g. Portrait introspectif aux traits nerveux et précis. Non encadré, livré dans un tube de protection.',
+ 'Portrait de l\'Absence',
+ 'Dessin à l\'encre de Chine sur papier Canson 200g. Portrait introspectif aux traits nerveux et précis. Non encadré, livré dans un tube de protection.',
  'Encre de Chine', '30 × 42 cm', 2023, 'tres_bon',
  280.00, 'negociation', 'active',
  NULL, NULL, NULL, 'Expédition rapide', 76);
@@ -388,8 +388,8 @@ VALUES
 INSERT INTO nego_message (id_nego, montant_propose, contenu, emetteur) VALUES
 (2, 280.00, 'Je suis très intéressé par ce dessin.', 'acheteur'),
 (2, 250.00, 'Ma contre-offre : 250 €.', 'vendeur'),
-(2, 260.00, 'Je monte à 260 €, c'est mon maximum.', 'acheteur'),
-(2, 265.00, 'Je descends à 265 €, c'est mon dernier prix.', 'vendeur');
+(2, 260.00, 'Je monte à 260 €, c\'est mon maximum.', 'acheteur'),
+(2, 265.00, 'Je descends à 265 €, c\'est mon dernier prix.', 'vendeur');
 
 
 -- ------------------------------------------------------------
@@ -418,7 +418,7 @@ INSERT INTO notification (id_user, type, message, lu) VALUES
 
 -- Notifications pour Thomas Renard (id 3, vendeur)
 (3, 'surenchere',
- 'Nouvelle enchère sur "L'Éveil de la Forme" : offre actuelle à 3 100 €.',
+ 'Nouvelle enchère sur "L\'Éveil de la Forme" : offre actuelle à 3 100 €.',
  0),
 (3, 'surenchere',
  'Nouvelle enchère sur "Éclat de Marbre #2" : offre actuelle à 3 800 €.',
@@ -429,12 +429,12 @@ INSERT INTO notification (id_user, type, message, lu) VALUES
  'Votre achat de "Paysage Intérieur III" pour 520 € est confirmé.',
  0),
 (5, 'surenchere',
- 'Vous avez été surenchéri sur "L'Éveil de la Forme". Offre actuelle : 3 100 €.',
+ 'Vous avez été surenchéri sur "L\'Éveil de la Forme". Offre actuelle : 3 100 €.',
  0),
 
 -- Notifications pour Lucas (id 6, acheteur)
 (6, 'nego_recue',
- 'Le vendeur a répondu à votre négociation sur "Portrait de l'Absence" : 265 €.',
+ 'Le vendeur a répondu à votre négociation sur "Portrait de l\'Absence" : 265 €.',
  0),
 
 -- Notifications pour Jean (id 7, acheteur)

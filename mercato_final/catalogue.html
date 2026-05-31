@@ -7,50 +7,106 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
   <style>
-  // reset CSS + supression des marges et paddings par defaut 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  // varibles globals 
     :root {
-      --noir:    #1A1A2E;
-      --or:      #C9A84C;
-      --or-cl:   #E8C96A;
-      --fond:    #F8F5EE;
-      --blanc:   #FFFFFF;
-      --gris:    #6B7280;
-      --gris-c:  #F3F0E8;
-      --bordeau: #7B2D42;
-      --vert:    #2D7B5A;
-      --bleu:    #2D4A7B;
-      --sh-s:    0 2px 12px rgba(0,0,0,0.07);
-      --sh-m:    0 4px 24px rgba(0,0,0,0.10);
-      --sh-l:    0 12px 40px rgba(0,0,0,0.15);
-      --rad:     10px;
-      --tr:      0.22s ease;
+      --noir:     #1A1A2E;
+      --noir-2:   #2D2D4E;
+      --or:       #C9A84C;
+      --or-clair: #E8C96A;
+      --fond:     #F8F5EE;
+      --blanc:    #FFFFFF;
+      --gris:     #6B7280;
+      --gris-c:   #F3F0E8;
+      --bordeau:  #7B2D42;
+      --vert:     #2D7B5A;
+      --bleu:     #2D4A7B;
+      --shadow-s: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-m: 0 4px 24px rgba(0,0,0,0.10);
+      --shadow-l: 0 12px 40px rgba(0,0,0,0.15);
+      --radius:   10px;
+      --radius-l: 16px;
+      --trans:    0.22s ease;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', Arial, sans-serif; background: var(--fond); color: var(--noir); line-height: 1.6; }
+    body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--fond); color: var(--noir); line-height: 1.6; }
     a { text-decoration: none; color: inherit; }
     button { cursor: pointer; border: none; font-family: inherit; }
+    img { max-width: 100%; display: block; }
 
-
-    .navbar { position: sticky; top: 0; z-index: 100; background: var(--noir); box-shadow: 0 2px 20px rgba(0,0,0,0.35); }
-    .navbar__inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; padding: 0 24px; height: 64px; gap: 28px; }
-    .navbar__logo { display: flex; align-items: center; gap: 10px; }
-    .navbar__logo-icon { width: 38px; height: 38px; background: var(--or); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
-    .navbar__logo-text { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 700; color: var(--or); letter-spacing: 1.5px; }
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--noir);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+    }
+    .navbar__inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center;
+      padding: 0 24px; height: 64px; gap: 28px;
+    }
+    .navbar__logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .navbar__logo-icon {
+      width: 38px; height: 38px; background: var(--or);
+      border-radius: 9px; display: flex; align-items: center;
+      justify-content: center; font-size: 19px;
+    }
+    .navbar__logo-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px; font-weight: 700;
+      color: var(--or); letter-spacing: 1.5px;
+    }
     .navbar__links { display: flex; gap: 2px; flex: 1; }
-    .navbar__link { padding: 7px 14px; border-radius: 7px; font-size: 13.5px; font-weight: 500; color: #D1D5DB; transition: all var(--tr); }
-    .navbar__link:hover, .navbar__link--active { color: var(--or); background: rgba(201,168,76,0.12); }
+    .navbar__link {
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 13.5px; font-weight: 500;
+      color: #D1D5DB; background: transparent;
+      transition: all var(--trans); white-space: nowrap;
+    }
+    .navbar__link:hover, .navbar__link--active {
+      color: var(--or);
+      background: rgba(201,168,76,0.12);
+    }
     .navbar__right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-    .navbar__search { display: flex; align-items: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; padding: 7px 13px; gap: 8px; }
-    .navbar__search input { background: transparent; border: none; outline: none; color: #F8F5EE; font-size: 13px; width: 190px; font-family: inherit; }
+    .navbar__search {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9px; padding: 7px 13px; gap: 8px;
+    }
+    .navbar__search input {
+      background: transparent; border: none; outline: none;
+      color: #F8F5EE; font-size: 13px; width: 190px;
+      font-family: inherit;
+    }
     .navbar__search input::placeholder { color: #6B7280; }
-    .navbar__icon-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: #D1D5DB; font-size: 16px; cursor: pointer; position: relative; }
-    .navbar__badge { position: absolute; top: -5px; right: -5px; background: var(--or); color: var(--noir); border-radius: 50%; width: 17px; height: 17px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .navbar__login { background: var(--or); color: var(--noir); border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 700; }
+    .navbar__icon-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      color: #D1D5DB; font-size: 16px; cursor: pointer;
+      transition: all var(--trans); position: relative;
+    }
+    .navbar__icon-btn:hover { background: rgba(255,255,255,0.15); color: var(--or); }
+    .navbar__badge {
+      position: absolute; top: -5px; right: -5px;
+      background: var(--or); color: var(--noir);
+      border-radius: 50%; width: 17px; height: 17px;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .navbar__login {
+      background: var(--or); color: var(--noir);
+      border-radius: 8px; padding: 8px 18px;
+      font-size: 13px; font-weight: 700;
+      transition: all var(--trans);
+    }
+    .navbar__login:hover { background: var(--or-clair); }
 
     .cat-header {
-      background: var(--noir);
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D2D4E 100%);
       padding: 40px 24px 36px;
     }
     .cat-header__inner { max-width: 1280px; margin: 0 auto; }
@@ -65,7 +121,7 @@
     .cat-header__sub { color: #9CA3AF; font-size: 14px; margin-bottom: 24px; }
     .cat-header__search {
       display: flex; max-width: 500px;
-      background: var(--blanc); border-radius: 10px; overflow: hidden;
+      background: var(--blanc); border-radius: var(--radius); overflow: hidden;
     }
     .cat-header__search input {
       flex: 1; border: none; outline: none;
@@ -91,7 +147,7 @@
     .chip {
       padding: 6px 15px; border-radius: 22px;
       font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: all var(--tr);
+      cursor: pointer; transition: all var(--trans);
       border: 1.5px solid currentColor;
     }
     .chip--immediat { color: var(--vert); background: #E8F5EF; }
@@ -104,7 +160,6 @@
     .chip--cat { color: var(--gris); background: var(--blanc); border-color: #E5E7EB; }
     .chip--cat.active { background: var(--noir); color: var(--or); border-color: var(--noir); }
 
-  
     .cat-body {
       max-width: 1280px; margin: 0 auto;
       padding: 28px 24px 60px;
@@ -113,9 +168,9 @@
 
     .sidebar { width: 256px; flex-shrink: 0; }
     .sidebar-card {
-      background: var(--blanc); border-radius: 12px;
+      background: var(--blanc); border-radius: var(--radius-l);
       padding: 18px; margin-bottom: 14px;
-      border: 1px solid #F0EDE6; box-shadow: var(--sh-s);
+      border: 1px solid #F0EDE6; box-shadow: var(--shadow-s);
     }
     .sidebar-title {
       font-size: 11.5px; font-weight: 700; color: var(--noir);
@@ -126,7 +181,7 @@
       width: 100%; padding: 8px 10px; border-radius: 8px;
       background: transparent; border: none;
       font-size: 13px; font-weight: 400; color: #374151;
-      cursor: pointer; transition: all var(--tr); text-align: left;
+      cursor: pointer; transition: all var(--trans); text-align: left;
     }
     .cat-btn:hover { background: var(--fond); color: var(--noir); }
     .cat-btn.active { background: var(--noir); color: var(--or); font-weight: 600; }
@@ -148,18 +203,17 @@
     .sidebar-reset {
       width: 100%; padding: 10px; border: 1.5px solid #E5E7EB;
       border-radius: 9px; color: var(--gris); font-size: 13px;
-      background: transparent; cursor: pointer; transition: all var(--tr);
+      background: transparent; cursor: pointer; transition: all var(--trans);
     }
     .sidebar-reset:hover { border-color: var(--noir); color: var(--noir); }
 
     .main-area { flex: 1; min-width: 0; }
 
-
     .toolbar {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--blanc); border-radius: var(--rad);
+      background: var(--blanc); border-radius: var(--radius);
       padding: 12px 18px; margin-bottom: 20px;
-      border: 1px solid #F0EDE6; box-shadow: var(--sh-s);
+      border: 1px solid #F0EDE6; box-shadow: var(--shadow-s);
     }
     .toolbar__count { font-size: 14px; color: var(--gris); }
     .toolbar__count strong { color: var(--noir); }
@@ -175,29 +229,25 @@
     }
     .view-btn {
       padding: 7px 13px; background: var(--blanc); border: none;
-      color: #9CA3AF; font-size: 17px; cursor: pointer; transition: all var(--tr);
+      color: #9CA3AF; font-size: 17px; cursor: pointer; transition: all var(--trans);
     }
     .view-btn.active { background: var(--noir); color: var(--or); }
 
-    /* Grid */
     .art-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
       gap: 22px;
     }
-    .art-grid--list {
-      grid-template-columns: 1fr;
-    }
+    .art-grid--list { grid-template-columns: 1fr; }
 
-  
     .card {
       background: var(--blanc); border-radius: 13px;
       overflow: hidden; border: 1px solid #F0EDE6;
-      box-shadow: var(--sh-s);
-      transition: transform var(--tr), box-shadow var(--tr);
+      box-shadow: var(--shadow-s);
+      transition: transform var(--trans), box-shadow var(--trans);
       display: flex; flex-direction: column; cursor: pointer;
     }
-    .card:hover { transform: translateY(-5px); box-shadow: var(--sh-l); }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-l); }
     .card--list { flex-direction: row; }
     .card--list .card__img { width: 180px; flex-shrink: 0; height: auto; }
     .card--list:hover { transform: translateY(-2px); }
@@ -220,7 +270,7 @@
       background: rgba(255,255,255,0.92); border: 1px solid #E5E7EB;
       border-radius: 50%; width: 34px; height: 34px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; cursor: pointer; transition: all var(--tr);
+      font-size: 15px; cursor: pointer; transition: all var(--trans);
     }
     .card__fav:hover { border-color: var(--bordeau); background: #FFF0F3; }
     .card__body {
@@ -244,7 +294,7 @@
     .btn-p {
       flex: 1; border-radius: 9px; padding: 10px 0;
       font-size: 13px; font-weight: 700; color: var(--blanc);
-      cursor: pointer; transition: opacity var(--tr); border: none;
+      cursor: pointer; transition: opacity var(--trans); border: none;
     }
     .btn-p:hover { opacity: 0.86; }
     .btn-p--noir    { background: var(--noir); color: var(--or); }
@@ -254,13 +304,11 @@
       background: transparent; color: var(--gris);
       border: 1.5px solid #E5E7EB; border-radius: 9px;
       padding: 10px 14px; font-size: 13px; cursor: pointer;
-      transition: all var(--tr);
+      transition: all var(--trans);
     }
     .btn-s:hover { border-color: var(--noir); color: var(--noir); }
 
-    .empty {
-      text-align: center; padding: 90px 24px;
-    }
+    .empty { text-align: center; padding: 90px 24px; }
     .empty__icon { font-size: 68px; margin-bottom: 18px; }
     .empty__title { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; color: var(--noir); margin-bottom: 9px; }
     .empty__sub { color: var(--gris); margin-bottom: 26px; }
@@ -281,17 +329,13 @@
     .footer__col-link:hover { color: var(--or); }
     .footer__bar { border-top: 1px solid rgba(255,255,255,0.07); padding: 18px 24px; max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; font-size: 12px; color: #6B7280; }
 
-    @media (max-width: 900px) {
-      .sidebar { display: none; }
-    }
+    @media (max-width: 900px) { .sidebar { display: none; } }
     @media (max-width: 640px) {
       .navbar__search, .navbar__links { display: none; }
       .art-grid { grid-template-columns: 1fr 1fr; }
       .footer__grid { grid-template-columns: 1fr; }
     }
-    @media (max-width: 420px) {
-      .art-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 420px) { .art-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -315,10 +359,10 @@
           <input type="text" id="navSearch" placeholder="Rechercher une œuvre, un artiste…" />
         </div>
         <button class="navbar__icon-btn" title="Favoris">♡</button>
-        <button class="navbar__icon-btn" title="Panier">
+        <a href="panier.html"><button class="navbar__icon-btn" title="Panier">
           🛒<span class="navbar__badge" id="cartBadge">0</span>
-        </button>
-        <button class="navbar__login">Se connecter</button>
+        </button></a>
+        <span id="zoneConnexion"><a href="login.html"><button class="navbar__login">Se connecter</button></a></span>
       </div>
     </div>
   </nav>
@@ -836,11 +880,19 @@
 
   <script>
 
+    // ── Auth & panier depuis localStorage ────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+      document.getElementById('zoneConnexion').innerHTML =
+        `<a href="profil.html"><button class="navbar__login">${user.prenom}</button></a>`;
+    }
+    let cartCount = JSON.parse(localStorage.getItem('panier') || '[]').length;
+    document.getElementById('cartBadge').textContent = cartCount;
+
     let activeTypes = [];
     let activeCat   = "all";
     let maxPrix     = 5000;
     let searchQuery = "";
-    let cartCount   = 0;
 
     const grid  = document.getElementById("artGrid");
     const cards = Array.from(grid.querySelectorAll(".card"));
@@ -1020,8 +1072,17 @@
     document.querySelectorAll(".add-cart").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        const titre = btn.closest(".card")?.querySelector(".card__title")?.textContent || "l'œuvre";
-        cartCount++;
+        const card    = btn.closest(".card");
+        const titre   = card.querySelector(".card__title")?.textContent.trim() || "";
+        const artiste = card.querySelector(".card__artist")?.textContent.trim() || "";
+        const meta    = card.querySelector(".card__meta")?.textContent.trim() || "";
+        const prix_base = parseFloat(card.dataset.prix) || 0;
+        const [nom = "", prenom = ""] = artiste.split(" ");
+        const [technique = "", dimensions = ""] = meta.split("·").map(s => s.trim());
+        const panier = JSON.parse(localStorage.getItem('panier') || '[]');
+        panier.push({ titre, prix_base, nom, prenom, technique, dimensions });
+        localStorage.setItem('panier', JSON.stringify(panier));
+        cartCount = panier.length;
         document.getElementById("cartBadge").textContent = cartCount;
         showToast(`"${titre}" ajouté au panier`);
       });

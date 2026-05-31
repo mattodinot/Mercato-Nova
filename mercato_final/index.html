@@ -432,11 +432,11 @@
           <input type="text" placeholder="Rechercher une œuvre, un artiste…" />
         </div>
         <button class="navbar__icon-btn" title="Favoris">♡</button>
-        <button class="navbar__icon-btn" title="Panier">
+        <a href="panier.html"><button class="navbar__icon-btn" title="Panier">
           🛒
-          <span class="navbar__badge">2</span>
-        </button>
-        <button class="navbar__login">Se connecter</button>
+          <span class="navbar__badge" id="cartBadge">0</span>
+        </button></a>
+        <span id="zoneConnexion"><a href="login.html"><button class="navbar__login">Se connecter</button></a></span>
       </div>
     </div>
   </nav>
@@ -968,6 +968,15 @@
     tickAll();
     setInterval(tickAll, 1000);
 
+    // ── Auth & panier depuis localStorage ────────────────────────
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user) {
+      document.getElementById('zoneConnexion').innerHTML =
+        `<a href="profil.html"><button class="navbar__login">${user.prenom}</button></a>`;
+    }
+    document.getElementById('cartBadge').textContent =
+      JSON.parse(localStorage.getItem('panier') || '[]').length;
+
     document.querySelectorAll(".card__fav").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
@@ -994,13 +1003,26 @@
     }
 
     document.querySelectorAll(".btn-primary--noir").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
         const card = btn.closest(".card");
-        const titre = card.querySelector(".card__title")?.textContent || "l'œuvre";
+        const titre   = card.querySelector(".card__title")?.textContent.trim() || "";
+        const artiste = card.querySelector(".card__artist")?.textContent.trim() || "";
+        const meta    = card.querySelector(".card__meta")?.textContent.trim() || "";
+        const prixTxt = card.querySelector(".card__price")?.textContent.replace(/\s/g, "").replace("€","").replace(",",".") || "0";
+        const prix_base = parseFloat(prixTxt) || 0;
+        const [nom = "", prenom = ""] = artiste.split(" ");
+        const [technique = "", dimensions = ""] = meta.split("·").map(s => s.trim());
+        const panier = JSON.parse(localStorage.getItem('panier') || '[]');
+        panier.push({ titre, prix_base, nom, prenom, technique, dimensions });
+        localStorage.setItem('panier', JSON.stringify(panier));
+        document.getElementById('cartBadge').textContent = panier.length;
         showToast(`"${titre}" ajouté au panier`);
-        const badge = document.querySelector(".navbar__badge");
-        if (badge) badge.textContent = parseInt(badge.textContent || "0") + 1;
       });
+    });
+
+    document.querySelector(".navbar__icon-btn[title='Favoris']")?.addEventListener("click", () => {
+      showToast("Fonctionnalité favoris bientôt disponible");
     });
   </script>
 

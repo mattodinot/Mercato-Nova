@@ -61,12 +61,11 @@ if ($q) {
 $clauseWhere = 'WHERE ' . implode(' AND ', $conditions);
 
 // ── 3. Clause ORDER BY selon le tri demandé ───────────────────
-$orderBy = match($tri) {
-    'prix_asc'  => 'ORDER BY a.prix_base ASC',
-    'prix_desc' => 'ORDER BY a.prix_base DESC',
-    'recent'    => 'ORDER BY a.date_creation DESC',
-    default     => 'ORDER BY a.date_creation DESC',
-};
+switch ($tri) {
+    case 'prix_asc':  $orderBy = 'ORDER BY a.prix_base ASC';      break;
+    case 'prix_desc': $orderBy = 'ORDER BY a.prix_base DESC';     break;
+    default:          $orderBy = 'ORDER BY a.date_creation DESC';
+}
 
 // ── 4. Requête principale ─────────────────────────────────────
 // On joint la table user pour récupérer le nom de l'artiste
